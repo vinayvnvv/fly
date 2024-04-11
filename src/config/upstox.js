@@ -1,10 +1,18 @@
 import { axios } from './../common/axios';
 
+const {
+  VITE_UPSTOX_API_KEY,
+  VITE_UPSTOX_API_SECRET,
+  VITE_UPSTOX_API_REDIRECT_URL,
+} = import.meta.env;
+
+console.log('VITE_SOME_KEY', import.meta.env);
+
 export const upstoxHost = `https://api.upstox.com/v2`;
 class UpStox {
-  apiKey = '08ecd914-2dfd-471f-8e62-f03738bce6a3';
-  apiSecret = 'p2v4xpj1bh';
-  redirectUrl = 'http://localhost:3000/login';
+  apiKey = VITE_UPSTOX_API_KEY;
+  apiSecret = VITE_UPSTOX_API_SECRET;
+  redirectUrl = VITE_UPSTOX_API_REDIRECT_URL;
   generateURLEncodedData(data) {
     const formData = new URLSearchParams();
     if (typeof data === 'object') {
