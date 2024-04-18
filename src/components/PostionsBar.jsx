@@ -111,6 +111,7 @@ const PostionsBar = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell sx={{ textAlign: 'left' }}>Instrument</TableCell>
+                    <TableCell sx={{ textAlign: 'center' }}></TableCell>
                     <TableCell align="right">Qty</TableCell>
                     <TableCell align="right">LTP</TableCell>
                     <TableCell align="right"></TableCell>

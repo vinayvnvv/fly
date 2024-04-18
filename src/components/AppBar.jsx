@@ -163,7 +163,7 @@ const AppBar = () => {
           >
             <StyledTab label="Home" component={Link} to={'/'} />
             <StyledTab label="Orders" component={Link} to={'/orders'} />
-            <StyledTab label="Positions" component={Link} to={'/trade'} />
+            <StyledTab label="Positions" component={Link} to={'/positions'} />
             <StyledTab label="Settings" component={Link} to={'/trade'} />
           </StyledTabs>
           <ThemeSwitch />

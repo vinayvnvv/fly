@@ -5,6 +5,7 @@ import { useAtom } from 'jotai';
 import { token } from './store';
 import Trade from './modules/trade/Trade';
 import Orders from './modules/orders/Orders';
+import Positions from './modules/positions/Positions';
 
 const AuthRouter = ({ children }) => {
   const [authToken] = useAtom(token);
@@ -36,6 +37,14 @@ export const router = AppLayout =>
           element: (
             <AuthRouter>
               <Orders />
+            </AuthRouter>
+          ),
+        },
+        {
+          path: '/positions',
+          element: (
+            <AuthRouter>
+              <Positions />
             </AuthRouter>
           ),
         },

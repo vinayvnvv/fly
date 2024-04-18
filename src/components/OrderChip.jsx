@@ -1,10 +1,12 @@
 import {
   Box,
   Button,
+  IconButton,
   Paper,
   Stack,
   TableCell,
   TableRow,
+  Tooltip,
   Typography,
   alpha,
   buttonClasses,
@@ -27,6 +29,8 @@ import {
 } from '../common/utils';
 import { ORDER } from '../config';
 import { useSnackbar } from 'notistack';
+import { Cancel } from '@mui/icons-material';
+import LogoutTwoToneIcon from '@mui/icons-material/LogoutTwoTone';
 
 const OrderChipContainer = styled(TableRow)(({ theme, quantity }) => ({
   [`& .${tableCellClasses.root}:not(.always-highlet)`]: {
@@ -113,17 +117,31 @@ const OrderChip = ({ data, key, profit, feeds }) => {
   const placeOrder = transaction_type => {
     placeUpstoxOrder(symbol, qty, transaction_type, enqueueSnackbar);
   };
+  const exitAllQtyInSymbol = () => {
+    placeUpstoxOrder(symbol, data.quantity, ORDER.SELL, enqueueSnackbar);
+  };
   return (
     <OrderChipContainer quantity={data.quantity}>
       <TableCell component="th" scope="row">
-        <Typography
-          variant="body2"
-          fontSize={11}
-          fontWeight={500}
-          textTransform={'uppercase'}
-        >
-          {getFormattedSymbolName(symbol)}
-        </Typography>
+        <Stack direction={'row'} alignItems={'center'} spacing={2}>
+          <Typography
+            variant="body2"
+            fontSize={11}
+            fontWeight={500}
+            textTransform={'uppercase'}
+          >
+            {getFormattedSymbolName(symbol)}
+          </Typography>
+        </Stack>
+      </TableCell>
+      <TableCell>
+        {data.quantity !== 0 && (
+          <Tooltip title="Exit all">
+            <IconButton size="small" color="error" onClick={exitAllQtyInSymbol}>
+              <Cancel fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        )}
       </TableCell>
       <TableCell align="right">
         <Typography
