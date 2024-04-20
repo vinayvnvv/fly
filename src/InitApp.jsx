@@ -13,6 +13,7 @@ const InitApp = ({ onInit }) => {
   const [symbols, setSymbols] = useAtom(stores.symbols);
   const [_, setFilteredSymbols] = useAtom(stores.filteredSymbols);
   const [__, setSymbolsObjects] = useAtom(stores.symbolsObjects);
+  const setSymbolQuantityInfo = useSetAtom(stores.symbolQuantityInfo);
   const setPositions = useSetAtom(stores.positions);
   const setFundsMargin = useSetAtom(stores.fundAndMargin);
   useEffect(() => {
@@ -38,7 +39,9 @@ const InitApp = ({ onInit }) => {
     if (!symbols) {
       await upstoxClient.getSymbols().then(res => {
         setSymbols(res);
-        setFilteredSymbols(filterSymbols(res));
+        const { data, symbolQuantityInfo } = filterSymbols(res);
+        setFilteredSymbols(data);
+        setSymbolQuantityInfo(symbolQuantityInfo);
         setSymbolsObjects(filterSymbolsObject(res));
         setTimeout(() => {
           onInit();

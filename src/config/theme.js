@@ -16,6 +16,9 @@ export const theme = options => {
         light: '#ff5722',
         dark: '#d4603b',
       },
+      text: {
+        primary: mode === 'light' ? '#222' : '#bbb',
+      },
     },
     // breakpoints: {
     //   values: {

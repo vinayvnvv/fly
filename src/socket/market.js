@@ -37,7 +37,7 @@ class MarketDataFeed {
       };
 
       this.ws.onmessage = async event => {
-        // console.log(event);
+        // console.log(this.keys);
         const arrayBuffer = await blobToArrayBuffer(event.data);
         let buffer = Buffer.from(arrayBuffer);
         let response = decodeProfobuf(buffer);

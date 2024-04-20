@@ -30,6 +30,7 @@ import { MarketDataFeedSocket } from '../../socket/market';
 import CandlestickChartRoundedIcon from '@mui/icons-material/CandlestickChartRounded';
 import { useSnackbar } from 'notistack';
 import PostionsBar from '../../components/PostionsBar';
+import QuantityInput from '../../components/QuantityInput';
 
 const TableItemRoot = styled(Stack)(({ theme, active, selected }) => ({
   // borderTop: `1px solid ${theme.palette.divider}`,
@@ -115,12 +116,12 @@ const TableItemRootPrice = styled(props => (
 }));
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  borderRadius: '8px',
+  borderRadius: '5px',
   flexGrow: 1,
   width: `${100 / 3}%`,
 }));
 
-const TableItem = ({ data, active, isLast, ltpStrikePrices }) => {
+const TableItem = ({ data, active, isLast, ltpStrikePrices, quantity }) => {
   const { enqueueSnackbar } = useSnackbar();
   let classes = [];
   const { strike, options } = data || {};
@@ -138,7 +139,7 @@ const TableItem = ({ data, active, isLast, ltpStrikePrices }) => {
 
   const placeOrder = type => {
     const d = options[type];
-    placeUpstoxOrder(d, d.lot_size, ORDER.BUY, enqueueSnackbar);
+    placeUpstoxOrder(d, quantity || d.lot_size, ORDER.BUY, enqueueSnackbar);
   };
 
   return (
@@ -190,7 +191,10 @@ const TableItem = ({ data, active, isLast, ltpStrikePrices }) => {
             className="chart-icon"
             sx={{ right: `calc(100% - 1px)` }}
           >
-            <CandlestickChartRoundedIcon fontSize="small" />
+            <CandlestickChartRoundedIcon
+              sx={{ color: 'text.primary' }}
+              fontSize="small"
+            />
           </IconButton>
           <Typography variant="subtitle2">{strike}</Typography>
           <IconButton
@@ -199,7 +203,10 @@ const TableItem = ({ data, active, isLast, ltpStrikePrices }) => {
             className="chart-icon"
             sx={{ left: `calc(100% - 1px)` }}
           >
-            <CandlestickChartRoundedIcon fontSize="small" />
+            <CandlestickChartRoundedIcon
+              sx={{ color: 'text.primary' }}
+              fontSize="small"
+            />
           </IconButton>
         </Card>
         <Box
@@ -232,7 +239,7 @@ const TableItem = ({ data, active, isLast, ltpStrikePrices }) => {
       {!isLast && (
         <Divider
           sx={{
-            opacity: 0.5,
+            opacity: 0.4,
           }}
         />
       )}
@@ -246,8 +253,12 @@ const IndexList = ({
   ltpStrikePrices,
   closeDiff,
 }) => {
-  console.log('IndexList', indexTitle, data, ltpStrikePrices, instrumentKey);
+  // console.log('IndexList', indexTitle, data, ltpStrikePrices, instrumentKey);
+
+  const [symbolQuantityInfo] = useAtom(stores.symbolQuantityInfo);
+  const quantityInfo = symbolQuantityInfo?.[instrumentKey];
   const [optionChains, setOptionChain] = useState([]);
+  const [quantity, setQuatity] = useState(quantityInfo.minimum_lot);
   const [strikePrice, setStrikePrice] = useState(ltpStrikePrices);
   useEffect(() => {
     if (ltpStrikePrices !== 0) {
@@ -264,6 +275,13 @@ const IndexList = ({
   useEffect(() => {
     console.log('useEffect', strikePrice);
   }, [strikePrice]);
+
+  const openChart = () => {
+    window.open(
+      `https://tv.upstox.com/charts/${instrumentKey}?isFromPW3=true`,
+      '_blank',
+    );
+  };
   return (
     <StyledPaper variant="outlined">
       <Box p={1} px={2}>
@@ -276,6 +294,23 @@ const IndexList = ({
             showWithPerc
             instrumentKey={instrumentKey}
           />
+          <IconButton
+            size="small"
+            onClick={() => openChart('PE')}
+            className="chart-icon"
+          >
+            <CandlestickChartRoundedIcon
+              sx={{ color: 'text.primary' }}
+              fontSize="small"
+            />
+          </IconButton>
+          <QuantityInput
+            max={quantityInfo.freeze_quantity}
+            step={quantityInfo.lot_size}
+            value={quantity}
+            onChange={v => setQuatity(v)}
+            min={quantityInfo.minimum_lot}
+          />
         </Stack>
       </Box>
       <Divider />
@@ -283,6 +318,7 @@ const IndexList = ({
         optionChains.map((option, idx) => (
           <TableItem
             data={option}
+            quantity={quantity}
             key={option.strike}
             active={idx === 2}
             ltpStrikePrices={strikePrice}

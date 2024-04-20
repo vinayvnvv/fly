@@ -182,6 +182,7 @@ const OrderChip = ({ data, key, profit, feeds }) => {
             defaultValue={lotSize}
             onChange={onQuantityChange}
             onKeyDown={onQuantityWheelChange}
+            step={lotSize}
             value={qty}
             max={orderQuatity}
           />

@@ -36,6 +36,14 @@ export const theme = atomWithStorage('theme', 'light', storageOptions, {
 export const symbols = atomWithStorage('symbols', '', jsonStorageOptions, {
   getOnInit: true,
 });
+export const symbolQuantityInfo = atomWithStorage(
+  'symbol_quantity_info',
+  '',
+  jsonStorageOptions,
+  {
+    getOnInit: true,
+  },
+);
 export const filteredSymbols = atomWithStorage(
   'filtered_symbols',
   '',
@@ -82,4 +90,5 @@ export const stores = {
   positions,
   instaBuy,
   fundAndMargin,
+  symbolQuantityInfo,
 };

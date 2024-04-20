@@ -22,18 +22,48 @@ export function filterSymbols(symbols) {
     sensex: [],
   };
 
+  const symbolQuantityInfo = {};
+
   for (const symbol of symbols) {
     switch (symbol.name) {
       case 'NIFTY':
+        if (!symbolQuantityInfo[instrumentKeys.NIFTY]) {
+          symbolQuantityInfo[instrumentKeys.NIFTY] = {
+            minimum_lot: symbol.minimum_lot,
+            lot_size: symbol.lot_size,
+            freeze_quantity: symbol.freeze_quantity,
+          };
+        }
         data.nifty.push(symbol);
         break;
       case 'BANKNIFTY':
+        if (!symbolQuantityInfo[instrumentKeys.BANKNIFTY]) {
+          symbolQuantityInfo[instrumentKeys.BANKNIFTY] = {
+            minimum_lot: symbol.minimum_lot,
+            lot_size: symbol.lot_size,
+            freeze_quantity: symbol.freeze_quantity,
+          };
+        }
         data.bankNifty.push(symbol);
         break;
       case 'FINNIFTY':
+        if (!symbolQuantityInfo[instrumentKeys.FINNIFTY]) {
+          symbolQuantityInfo[instrumentKeys.FINNIFTY] = {
+            minimum_lot: symbol.minimum_lot,
+            lot_size: symbol.lot_size,
+            freeze_quantity: symbol.freeze_quantity,
+          };
+        }
         data.finNifty.push(symbol);
         break;
       case 'SENSEX':
+        if (!symbolQuantityInfo[instrumentKeys.SENSEX]) {
+          symbolQuantityInfo[instrumentKeys.SENSEX] = {
+            minimum_lot: symbol.minimum_lot,
+            lot_size: symbol.lot_size,
+            freeze_quantity: symbol.freeze_quantity,
+          };
+        }
         data.sensex.push(symbol);
         break;
       default:
@@ -41,7 +71,7 @@ export function filterSymbols(symbols) {
         break;
     }
   }
-  return data;
+  return { data, symbolQuantityInfo };
 }
 export function filterSymbolsObject(symbols) {
   const obj = {};
