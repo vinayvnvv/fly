@@ -22,6 +22,7 @@ import SocketTypo from './SocketTypo';
 import { instrumentKeys } from '../config';
 import { useAtom } from 'jotai';
 import { stores } from '../store';
+import PostionsBar from './PostionsBar';
 
 export const appBarHeight = {
   mobile: 40,
@@ -173,7 +174,21 @@ const AppBar = () => {
               {formaToINR(fundsMargins?.available_margin)}
             </Typography>
           </Stack>
-
+          <Divider orientation="vertical" sx={{ height: '23px', mx: 1.5 }} />
+          <Stack direction={'column'} alignItems={'flex-start'}>
+            <Typography fontSize={9} fontWeight={600} color={'GrayText'}>
+              PL
+            </Typography>
+            <PostionsBar
+              showPercAtInit
+              showOnlyProfit
+              profitTypoStyles={{
+                minWidth: '0px',
+                paddingRight: '0px',
+                fontSize: '19px',
+              }}
+            />
+          </Stack>
           <Box flexGrow={1} />
           <StyledTabs
             sx={{ mr: 3 }}

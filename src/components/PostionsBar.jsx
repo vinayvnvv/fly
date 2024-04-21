@@ -50,16 +50,21 @@ const StyledTable = styled(Table)(({ theme }) => ({
   },
 }));
 
-const PostionsBar = () => {
+const PostionsBar = ({ showOnlyProfit, profitTypoStyles, showPercAtInit }) => {
   const theme = useTheme();
   const profit = useRef();
   const { enqueueSnackbar } = useSnackbar();
   const [showActive, setShowActive] = useState(false);
+  const [showPerc, setShowPerc] = useState(showPercAtInit || false);
   let positionExists = false;
   let totalProfit = 0;
   const [symbols] = useAtom(symbolsObjects);
   const [feeds] = useAtom(stores.marketFeed);
   const [positions] = useAtom(stores.positions);
+  const [fundsMargins] = useAtom(stores.fundAndMargin);
+  const margin = fundsMargins?.available_margin
+    ? fundsMargins?.available_margin + fundsMargins?.used_margin
+    : 0;
   const calcProfit = () => {
     if (!profit.current) profit.current = {};
     const { data } = positions || {};
@@ -97,117 +102,135 @@ const PostionsBar = () => {
     exitAllPositions(positions?.data, symbols, enqueueSnackbar);
   };
 
+  const percProfit = (totalProfit * 100) / margin;
+
+  const ProfitTypo = () => {
+    return (
+      <Typography
+        fontSize={'14px'}
+        fontWeight={600}
+        onClick={() => setShowPerc(!showPerc)}
+        textAlign={'right'}
+        pr={2}
+        sx={{
+          color:
+            totalProfit >= 0
+              ? getGreenTextColor(theme)
+              : getRedTextColor(theme),
+          minWidth: '80px',
+          ...profitTypoStyles,
+        }}
+      >
+        {showPerc
+          ? `${percProfit}%`
+          : totalProfit && totalProfit !== 'NaN'
+            ? formaToINR(totalProfit)
+            : ''}
+      </Typography>
+    );
+  };
+
   return (
     <>
-      <Paper sx={{ marginBottom: '16px', py: 1, px: 2 }} variant="outlined">
-        <Box direction={'column'} alignItems={'center'}>
-          <Box flexGrow={1}>
-            {Array.isArray(positions?.data) && positions?.data.length > 0 && (
-              <StyledTable
-                size="small"
-                sx={{ width: '100%' }}
-                aria-label="simple table"
-              >
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ textAlign: 'left' }}>Instrument</TableCell>
-                    <TableCell sx={{ textAlign: 'center' }}></TableCell>
-                    <TableCell align="right">Qty</TableCell>
-                    <TableCell align="right">LTP</TableCell>
-                    <TableCell align="right"></TableCell>
-                    <TableCell align="right">P&L</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {positions?.data
-                    ?.filter(i => (showActive ? i.quantity !== 0 : true))
-                    .map(pos => {
-                      return (
-                        <OrderChip
-                          feeds={feeds}
-                          profit={profit.current}
-                          data={pos}
-                          key={pos.instrument_token}
-                        />
-                      );
-                    })}
-                </TableBody>
-              </StyledTable>
-            )}
-          </Box>
-          <Box>
-            <Stack
-              direction={'row'}
-              py={1}
-              alignItems={'center'}
-              spacing={3}
-              pl={2}
-              justifyContent={'space-between'}
-            >
-              <Stack direction={'row'} alignItems={'center'}>
-                {positionExists && (
-                  <Stack direction={'row'} alignItems={'center'}>
-                    <ConfirmButton
-                      variant="contained"
-                      disableElevation
-                      size="small"
-                      sx={{ minWidth: '87px' }}
-                      startIcon={<LogoutIcon />}
-                      confirmText={'Confirm'}
-                      onConfirm={exitAll}
-                    >
-                      Exit all
-                    </ConfirmButton>
-                    <Divider
-                      orientation="vertical"
-                      sx={{ height: '23px', mx: 1.5 }}
-                    />
-                  </Stack>
-                )}
-                <Stack direction={'row'} alignItems={'center'}>
-                  <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          onChange={e => setShowActive(e.target.checked)}
-                          value={showActive}
-                        />
-                      }
-                      label="Active Positions"
-                    />
-                  </FormGroup>
-                </Stack>
-              </Stack>
-
+      {!showOnlyProfit ? (
+        <Paper sx={{ marginBottom: '16px', py: 1, px: 2 }} variant="outlined">
+          <Box direction={'column'} alignItems={'center'}>
+            <Box flexGrow={1}>
+              {Array.isArray(positions?.data) && positions?.data.length > 0 && (
+                <StyledTable
+                  size="small"
+                  sx={{ width: '100%' }}
+                  aria-label="simple table"
+                >
+                  <TableHead>
+                    <TableRow>
+                      <TableCell sx={{ textAlign: 'left' }}>
+                        Instrument
+                      </TableCell>
+                      <TableCell sx={{ textAlign: 'center' }}></TableCell>
+                      <TableCell align="right">Qty</TableCell>
+                      <TableCell align="right">LTP</TableCell>
+                      <TableCell align="right"></TableCell>
+                      <TableCell align="right">P&L</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {positions?.data
+                      ?.filter(i => (showActive ? i.quantity !== 0 : true))
+                      .map(pos => {
+                        return (
+                          <OrderChip
+                            feeds={feeds}
+                            profit={profit.current}
+                            data={pos}
+                            key={pos.instrument_token}
+                          />
+                        );
+                      })}
+                  </TableBody>
+                </StyledTable>
+              )}
+            </Box>
+            <Box>
               <Stack
                 direction={'row'}
+                py={1}
                 alignItems={'center'}
-                spacing={1}
-                justifyContent={'flex-end'}
+                spacing={3}
+                pl={2}
+                justifyContent={'space-between'}
               >
-                <Typography>PL:</Typography>
-                <Typography
-                  fontSize={'14px'}
-                  fontWeight={600}
-                  textAlign={'right'}
-                  pr={2}
-                  sx={{
-                    color:
-                      totalProfit >= 0
-                        ? getGreenTextColor(theme)
-                        : getRedTextColor(theme),
-                    minWidth: '80px',
-                  }}
+                <Stack direction={'row'} alignItems={'center'}>
+                  {positionExists && (
+                    <Stack direction={'row'} alignItems={'center'}>
+                      <ConfirmButton
+                        variant="contained"
+                        disableElevation
+                        size="small"
+                        sx={{ minWidth: '87px' }}
+                        startIcon={<LogoutIcon />}
+                        confirmText={'Confirm'}
+                        onConfirm={exitAll}
+                      >
+                        Exit all
+                      </ConfirmButton>
+                      <Divider
+                        orientation="vertical"
+                        sx={{ height: '23px', mx: 1.5 }}
+                      />
+                    </Stack>
+                  )}
+                  <Stack direction={'row'} alignItems={'center'}>
+                    <FormGroup>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            onChange={e => setShowActive(e.target.checked)}
+                            value={showActive}
+                          />
+                        }
+                        label="Active Positions"
+                      />
+                    </FormGroup>
+                  </Stack>
+                </Stack>
+
+                <Stack
+                  direction={'row'}
+                  alignItems={'center'}
+                  spacing={1}
+                  justifyContent={'flex-end'}
                 >
-                  {totalProfit && totalProfit !== 'NaN'
-                    ? formaToINR(totalProfit)
-                    : ''}
-                </Typography>
+                  <Typography>PL:</Typography>
+                  <ProfitTypo />
+                </Stack>
               </Stack>
-            </Stack>
+            </Box>
           </Box>
-        </Box>
-      </Paper>
+        </Paper>
+      ) : (
+        <ProfitTypo />
+      )}
     </>
   );
 };
