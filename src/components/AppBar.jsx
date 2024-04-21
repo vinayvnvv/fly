@@ -14,8 +14,8 @@ import {
   Stack,
 } from '@mui/material';
 import ThemeSwitch from './ThemeSwitch';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import TimeClock from './Clock';
 import { formaToINR, getColorWithThemeMode } from '../common/utils';
 import SocketTypo from './SocketTypo';
@@ -72,9 +72,29 @@ const StyledTab = styled(props => <Tab disableRipple {...props} />)(
     },
   }),
 );
+const navLinks = [
+  { label: 'Home', path: '/' },
+  { label: 'Orders', path: '/orders' },
+  { label: 'Positions', path: '/positions' },
+  { label: 'Settings', path: '/settings' },
+];
 const AppBar = () => {
   const [value, setValue] = useState(0);
   const [fundsMargins] = useAtom(stores.fundAndMargin);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const { pathname } = location;
+    if (pathname) {
+      const idx = navLinks.findIndex(obj => obj['path'] === pathname);
+      if (idx !== -1) {
+        setValue(idx);
+      }
+    }
+  }, [location]);
+
+  console.log(location);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -161,10 +181,14 @@ const AppBar = () => {
             onChange={handleChange}
             aria-label="basic tabs example"
           >
-            <StyledTab label="Home" component={Link} to={'/'} />
-            <StyledTab label="Orders" component={Link} to={'/orders'} />
-            <StyledTab label="Positions" component={Link} to={'/positions'} />
-            <StyledTab label="Settings" component={Link} to={'/trade'} />
+            {navLinks.map(nav => (
+              <StyledTab
+                key={nav.path}
+                label={nav.label}
+                component={NavLink}
+                to={nav.path}
+              />
+            ))}
           </StyledTabs>
           <ThemeSwitch />
         </AppHeaderToolBar>

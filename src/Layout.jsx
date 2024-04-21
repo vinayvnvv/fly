@@ -14,6 +14,9 @@ import { useEffect } from 'react';
 import { AppHeaderToolBar } from './components/AppBar';
 import PostionsBar from './components/PostionsBar';
 
+const buyMp3 = new URL('./assets/buy.mp3', import.meta.url).href;
+const sellMp3 = new URL('./assets/sell.mp3', import.meta.url).href;
+
 const AppLayout = () => {
   const [appToken] = useAtom(token);
   return (
@@ -24,6 +27,8 @@ const AppLayout = () => {
         {/* {appToken && <PostionsBar />} */}
         <Outlet />
       </Container>
+      <audio style={{ display: 'none' }} id="buy-audio" src={buyMp3} />
+      <audio style={{ display: 'none' }} id="sell-audio" src={sellMp3} />
     </Box>
   );
 };

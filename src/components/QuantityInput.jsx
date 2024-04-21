@@ -13,7 +13,12 @@ const StyledBox = styled(Stack)(({ theme }) => ({
     padding: '2px 8px',
   },
 }));
-const QuantityInput = ({ min, max, step, onChange, value }) => {
+const QuantityInput = ({ quantityInfo, onChange, value }) => {
+  const {
+    freeze_quantity: max,
+    lot_size: step,
+    minimum_lot: min,
+  } = quantityInfo || {};
   const onValueChange = e => {
     let v = e.target.value;
     if (v) v = parseInt(v);
@@ -25,7 +30,6 @@ const QuantityInput = ({ min, max, step, onChange, value }) => {
   };
   return (
     <StyledBox
-      flexGrow={1}
       flexDirection={'row'}
       display={'flex'}
       justifyContent={'flex-end'}

@@ -1,26 +1,49 @@
 import { Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import React, { useState, useEffect, useRef } from 'react';
+import isBetween from 'dayjs/plugin/isBetween';
+dayjs.extend(isBetween);
 
 const mp3Url = new URL('./../assets/bell.mp3', import.meta.url).href;
+const mp3BellSingle = new URL('./../assets/bell-single.mp3', import.meta.url)
+  .href;
+
+const isTimeIsMarketOpen = () => {
+  const currentTime = dayjs();
+  const startTime = dayjs().set('hour', 9).set('minute', 15).set('second', 0);
+  const endTime = dayjs().set('hour', 9).set('minute', 15).set('second', 2);
+
+  // Check if the current time is between the start and end time
+  const isBetween = currentTime.isBetween(startTime, endTime);
+  return isBetween;
+};
+
+const isTimeIsPreMarketClose = () => {
+  const currentTime = dayjs();
+  const startTime = dayjs().set('hour', 9).set('minute', 7).set('second', 44);
+  const endTime = dayjs().set('hour', 9).set('minute', 7).set('second', 46);
+
+  // Check if the current time is between the start and end time
+  const isBetween = currentTime.isBetween(startTime, endTime);
+  return isBetween;
+};
 
 const TimeClock = () => {
   const [time, setTime] = useState(new Date());
   const audioRef = useRef();
+  const audioPreMarketRef = useRef();
   useEffect(() => {
     const interval = setInterval(() => {
-      // const currentTime = dayjs();
-      // const targetTime = dayjs().set({ hour: 18, minute: 53, second: 0 });
-      // if (currentTime.isSame(targetTime, 'minute')) {
-      //   console.log('time');
-      // }
       setTime(new Date());
+      if (isTimeIsMarketOpen()) {
+        audioRef.current?.play();
+      }
+      if (isTimeIsPreMarketClose()) {
+        audioPreMarketRef.current?.play();
+      }
     }, 1000);
 
-    // setTimeout(() => {
-    //   audioRef.current?.play();
-    // }, 7000);
-
+    document.body.click();
     return () => clearInterval(interval);
   }, []);
 
@@ -29,7 +52,8 @@ const TimeClock = () => {
       <Typography variant="subtitle2" fontWeight={600}>
         {dayjs(time).format('hh:mm:ss')}
       </Typography>
-      {/* <audio ref={audioRef} src={mp3Url} /> */}
+      <audio ref={audioRef} src={mp3Url} />
+      <audio ref={audioPreMarketRef} src={mp3BellSingle} />
     </>
   );
 };

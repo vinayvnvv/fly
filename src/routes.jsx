@@ -6,6 +6,7 @@ import { token } from './store';
 import Trade from './modules/trade/Trade';
 import Orders from './modules/orders/Orders';
 import Positions from './modules/positions/Positions';
+import Settings from './modules/settings/Settings';
 
 const AuthRouter = ({ children }) => {
   const [authToken] = useAtom(token);
@@ -37,6 +38,14 @@ export const router = AppLayout =>
           element: (
             <AuthRouter>
               <Orders />
+            </AuthRouter>
+          ),
+        },
+        {
+          path: '/settings',
+          element: (
+            <AuthRouter>
+              <Settings />
             </AuthRouter>
           ),
         },

@@ -20,7 +20,7 @@ import {
   placeUpstoxOrder,
 } from '../../common/utils';
 import { chain } from './chain';
-import { useAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { stores } from '../../store';
 import { useEffect, useRef, useState } from 'react';
 import { upstoxClient } from '../../config/upstox';
@@ -254,11 +254,10 @@ const IndexList = ({
   closeDiff,
 }) => {
   // console.log('IndexList', indexTitle, data, ltpStrikePrices, instrumentKey);
-
   const [symbolQuantityInfo] = useAtom(stores.symbolQuantityInfo);
   const quantityInfo = symbolQuantityInfo?.[instrumentKey];
   const [optionChains, setOptionChain] = useState([]);
-  const [quantity, setQuatity] = useState(quantityInfo.minimum_lot);
+  const [quantitySize, setQuantitySize] = useAtom(stores.quantitySize);
   const [strikePrice, setStrikePrice] = useState(ltpStrikePrices);
   useEffect(() => {
     if (ltpStrikePrices !== 0) {
@@ -281,6 +280,10 @@ const IndexList = ({
       `https://tv.upstox.com/charts/${instrumentKey}?isFromPW3=true`,
       '_blank',
     );
+  };
+
+  const onChangeQuantitySize = v => {
+    setQuantitySize({ ...quantitySize, [instrumentKey]: v });
   };
   return (
     <StyledPaper variant="outlined">
@@ -305,11 +308,9 @@ const IndexList = ({
             />
           </IconButton>
           <QuantityInput
-            max={quantityInfo.freeze_quantity}
-            step={quantityInfo.lot_size}
-            value={quantity}
-            onChange={v => setQuatity(v)}
-            min={quantityInfo.minimum_lot}
+            quantityInfo={quantityInfo}
+            value={quantitySize?.[instrumentKey]}
+            onChange={onChangeQuantitySize}
           />
         </Stack>
       </Box>
@@ -318,7 +319,7 @@ const IndexList = ({
         optionChains.map((option, idx) => (
           <TableItem
             data={option}
-            quantity={quantity}
+            quantity={quantitySize?.[instrumentKey]}
             key={option.strike}
             active={idx === 2}
             ltpStrikePrices={strikePrice}
@@ -330,6 +331,8 @@ const IndexList = ({
 };
 const Home = () => {
   const [filteredSymbols] = useAtom(stores.filteredSymbols);
+  const [quantitySizeInit] = useAtom(stores.quantitySizeInit);
+  const setQuantitySize = useSetAtom(stores.quantitySize);
   const [ltpStrikePrices, setLtpStrikePrices] = useState({
     [instrumentKeys.BANKNIFTY]: 0,
     [instrumentKeys.NIFTY]: 0,
@@ -357,6 +360,7 @@ const Home = () => {
         }
       }
     });
+    setQuantitySize(quantitySizeInit);
   }, []);
   return (
     <>

@@ -1,7 +1,6 @@
 import { ORDER, indexOptionStrikeDiff, instrumentKeys } from '../config';
 import moment from 'moment';
 import { upstoxClient } from '../config/upstox';
-
 export const getColorWithThemeMode = (theme, light, dark) => {
   return theme?.palette?.mode === 'light' ? light : dark;
 };
@@ -23,6 +22,7 @@ export function filterSymbols(symbols) {
   };
 
   const symbolQuantityInfo = {};
+  const quantitySizeInit = {};
 
   for (const symbol of symbols) {
     switch (symbol.name) {
@@ -34,6 +34,9 @@ export function filterSymbols(symbols) {
             freeze_quantity: symbol.freeze_quantity,
           };
         }
+        if (!quantitySizeInit[instrumentKeys.NIFTY]) {
+          quantitySizeInit[instrumentKeys.NIFTY] = symbol.minimum_lot;
+        }
         data.nifty.push(symbol);
         break;
       case 'BANKNIFTY':
@@ -43,6 +46,9 @@ export function filterSymbols(symbols) {
             lot_size: symbol.lot_size,
             freeze_quantity: symbol.freeze_quantity,
           };
+        }
+        if (!quantitySizeInit[instrumentKeys.BANKNIFTY]) {
+          quantitySizeInit[instrumentKeys.BANKNIFTY] = symbol.minimum_lot;
         }
         data.bankNifty.push(symbol);
         break;
@@ -54,6 +60,9 @@ export function filterSymbols(symbols) {
             freeze_quantity: symbol.freeze_quantity,
           };
         }
+        if (!quantitySizeInit[instrumentKeys.FINNIFTY]) {
+          quantitySizeInit[instrumentKeys.FINNIFTY] = symbol.minimum_lot;
+        }
         data.finNifty.push(symbol);
         break;
       case 'SENSEX':
@@ -64,6 +73,9 @@ export function filterSymbols(symbols) {
             freeze_quantity: symbol.freeze_quantity,
           };
         }
+        if (!quantitySizeInit[instrumentKeys.SENSEX]) {
+          quantitySizeInit[instrumentKeys.SENSEX] = symbol.minimum_lot;
+        }
         data.sensex.push(symbol);
         break;
       default:
@@ -71,7 +83,7 @@ export function filterSymbols(symbols) {
         break;
     }
   }
-  return { data, symbolQuantityInfo };
+  return { data, symbolQuantityInfo, quantitySizeInit };
 }
 export function filterSymbolsObject(symbols) {
   const obj = {};
@@ -244,6 +256,8 @@ export function placeUpstoxOrder(
   transaction_type,
   notificationRef,
 ) {
+  const buyAudioRef = document.getElementById('buy-audio');
+  const sellAudioRef = document.getElementById('sell-audio');
   if (!isMarketTime()) {
     displayErrorNotification(notificationRef, 'Market is closed now');
     return;
@@ -277,16 +291,19 @@ export function placeUpstoxOrder(
     .then(res => {
       const { status } = res;
       if (status === 'success') {
-        if (transaction_type === 'BUY')
+        if (transaction_type === 'BUY') {
+          if (buyAudioRef) buyAudioRef.play();
           displayInfoNotification(
             notificationRef,
             `${getFormattedSymbolName(symbol)} order Sent`,
           );
-        else
+        } else {
+          if (sellAudioRef) sellAudioRef.play();
           displaySuccessNotification(
             notificationRef,
             `${getFormattedSymbolName(symbol)} Sell Complete`,
           );
+        }
       } else {
         displayErrorNotification(notificationRef, `error in placing order`);
       }
