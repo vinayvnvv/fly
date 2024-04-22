@@ -13,8 +13,19 @@ const isTimeIsMarketOpen = () => {
   const startTime = dayjs().set('hour', 9).set('minute', 15).set('second', 0);
   const endTime = dayjs().set('hour', 9).set('minute', 15).set('second', 2);
 
+  const startTimeClose = dayjs()
+    .set('hour', 15)
+    .set('minute', 0)
+    .set('second', 0);
+  const endTimeClose = dayjs()
+    .set('hour', 15)
+    .set('minute', 0)
+    .set('second', 2);
+
   // Check if the current time is between the start and end time
-  const isBetween = currentTime.isBetween(startTime, endTime);
+  const isBetween =
+    currentTime.isBetween(startTime, endTime) ||
+    currentTime.isBetween(startTimeClose, endTimeClose);
   return isBetween;
 };
 
@@ -23,8 +34,16 @@ const isTimeIsPreMarketClose = () => {
   const startTime = dayjs().set('hour', 9).set('minute', 7).set('second', 44);
   const endTime = dayjs().set('hour', 9).set('minute', 7).set('second', 46);
 
+  const startTimeEnd = dayjs()
+    .set('hour', 14)
+    .set('minute', 55)
+    .set('second', 0);
+  const endTimeEnd = dayjs().set('hour', 14).set('minute', 55).set('second', 2);
+
   // Check if the current time is between the start and end time
-  const isBetween = currentTime.isBetween(startTime, endTime);
+  const isBetween =
+    currentTime.isBetween(startTime, endTime) ||
+    currentTime.isBetween(startTimeEnd, endTimeEnd);
   return isBetween;
 };
 

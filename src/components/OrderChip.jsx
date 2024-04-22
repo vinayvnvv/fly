@@ -130,7 +130,7 @@ const OrderChip = ({ data, key, profit, feeds }) => {
             fontWeight={500}
             textTransform={'uppercase'}
           >
-            {getFormattedSymbolName(symbol)}
+            {getFormattedSymbolName(symbol) || data.trading_symbol}
           </Typography>
         </Stack>
       </TableCell>

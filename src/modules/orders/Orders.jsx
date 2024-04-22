@@ -143,7 +143,8 @@ const Orders = () => {
                   sx={{ textTransform: 'uppercase' }}
                 >
                   <Typography fontSize={'12px'}>
-                    {getFormattedSymbolName(symbols[row.instrument_token])}
+                    {getFormattedSymbolName(symbols[row.instrument_token]) ||
+                      row.trading_symbol}
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
