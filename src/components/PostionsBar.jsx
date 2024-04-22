@@ -102,7 +102,7 @@ const PostionsBar = ({ showOnlyProfit, profitTypoStyles, showPercAtInit }) => {
     exitAllPositions(positions?.data, symbols, enqueueSnackbar);
   };
 
-  const percProfit = (totalProfit * 100) / margin;
+  const percProfit = ((totalProfit * 100) / margin).toFixed(2);
 
   const ProfitTypo = () => {
     return (
