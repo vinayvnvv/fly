@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
@@ -7,6 +8,7 @@ import {
   FormGroup,
   Paper,
   Stack,
+  TableSortLabel,
   Typography,
   alpha,
   lighten,
@@ -20,6 +22,7 @@ import {
   getGreenTextColor,
   getRedTextColor,
 } from '../common/utils';
+import ShoppingBagTwoToneIcon from '@mui/icons-material/ShoppingBagTwoTone';
 import OrderChip from './OrderChip';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useAtom } from 'jotai';
@@ -34,7 +37,7 @@ import TableRow from '@mui/material/TableRow';
 import { useSnackbar } from 'notistack';
 import ConfirmButton from './ConfirmButton';
 
-const StyledTable = styled(Table)(({ theme }) => ({
+export const StyledTable = styled(Table)(({ theme }) => ({
   [`& .${tableHeadClasses.root}`]: {
     [`& .${tableCellClasses.root}`]: {
       fontSize: '9px',
@@ -55,6 +58,7 @@ const PostionsBar = ({ showOnlyProfit, profitTypoStyles, showPercAtInit }) => {
   const profit = useRef();
   const { enqueueSnackbar } = useSnackbar();
   const [showActive, setShowActive] = useState(false);
+  const [sort, setSort] = useState('');
   const [showPerc, setShowPerc] = useState(showPercAtInit || false);
   let positionExists = false;
   let totalProfit = 0;
@@ -99,7 +103,7 @@ const PostionsBar = ({ showOnlyProfit, profitTypoStyles, showPercAtInit }) => {
   totalProfit = totalProfit.toFixed(2);
 
   const exitAll = () => {
-    exitAllPositions(positions?.data, symbols, enqueueSnackbar);
+    exitAllPositions(positions?.data, symbols, enqueueSnackbar, feeds);
   };
 
   const percProfit = ((totalProfit * 100) / margin).toFixed(2);
@@ -130,10 +134,52 @@ const PostionsBar = ({ showOnlyProfit, profitTypoStyles, showPercAtInit }) => {
     );
   };
 
+  let positionArray = positions?.data?.map(i => ({
+    ...i,
+    profit: profit?.current?.[i.instrument_token],
+  }));
+  if (sort === 'plAsc') {
+    positionArray?.sort((a, b) => b.profit - a.profit);
+  }
+  if (sort === 'plDes') {
+    positionArray?.sort((a, b) => a.profit - b.profit);
+  }
+  if (sort === 'symbolDes') {
+    positionArray?.sort((a, b) =>
+      a.trading_symbol.localeCompare(b.trading_symbol),
+    );
+  }
+  if (sort === 'symbolAsc') {
+    positionArray?.sort((a, b) =>
+      b.trading_symbol.localeCompare(a.trading_symbol),
+    );
+  }
+
+  console.log('positionArray', positionArray);
+
+  if (positionArray && positionArray.length === 0) {
+    return showOnlyProfit ? (
+      <ProfitTypo />
+    ) : (
+      <Stack
+        sx={{ height: '100%' }}
+        direction={'column'}
+        alignItems={'center'}
+        justifyContent={'center'}
+        spacing={1}
+      >
+        <ShoppingBagTwoToneIcon sx={{ fontSize: 54, opacity: 0.5 }} />
+        <Typography color={'GrayText'} variant="h6">
+          No Positions.
+        </Typography>
+      </Stack>
+    );
+  }
+
   return (
     <>
       {!showOnlyProfit ? (
-        <Paper sx={{ marginBottom: '16px', py: 1, px: 2 }} variant="outlined">
+        <Paper sx={{ py: 1, px: 2 }} variant="outlined">
           <Box direction={'column'} alignItems={'center'}>
             <Box flexGrow={1}>
               {Array.isArray(positions?.data) && positions?.data.length > 0 && (
@@ -145,17 +191,37 @@ const PostionsBar = ({ showOnlyProfit, profitTypoStyles, showPercAtInit }) => {
                   <TableHead>
                     <TableRow>
                       <TableCell sx={{ textAlign: 'left' }}>
-                        Instrument
+                        <TableSortLabel
+                          onClick={() =>
+                            setSort(
+                              sort === 'symbolAsc' ? 'symbolDes' : 'symbolAsc',
+                            )
+                          }
+                          active={sort === 'symbolDes' || sort === 'symbolAsc'}
+                          direction={sort === 'symbolDes' ? 'desc' : 'asc'}
+                        >
+                          Instrument
+                        </TableSortLabel>
                       </TableCell>
                       <TableCell sx={{ textAlign: 'center' }}></TableCell>
                       <TableCell align="right">Qty</TableCell>
                       <TableCell align="right">LTP</TableCell>
                       <TableCell align="right"></TableCell>
-                      <TableCell align="right">P&L</TableCell>
+                      <TableCell align="right">
+                        <TableSortLabel
+                          onClick={() =>
+                            setSort(sort === 'plAsc' ? 'plDes' : 'plAsc')
+                          }
+                          active={sort === 'plDes' || sort === 'plAsc'}
+                          direction={sort === 'plDes' ? 'desc' : 'asc'}
+                        >
+                          P&L
+                        </TableSortLabel>
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {positions?.data
+                    {positionArray
                       ?.filter(i => (showActive ? i.quantity !== 0 : true))
                       .map(pos => {
                         return (

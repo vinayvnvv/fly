@@ -115,10 +115,10 @@ const OrderChip = ({ data, key, profit, feeds }) => {
     }
   };
   const placeOrder = transaction_type => {
-    placeUpstoxOrder(symbol, qty, transaction_type, enqueueSnackbar);
+    placeUpstoxOrder(symbol, qty, transaction_type, enqueueSnackbar, feeds);
   };
   const exitAllQtyInSymbol = () => {
-    placeUpstoxOrder(symbol, data.quantity, ORDER.SELL, enqueueSnackbar);
+    placeUpstoxOrder(symbol, data.quantity, ORDER.SELL, enqueueSnackbar, feeds);
   };
   return (
     <OrderChipContainer quantity={data.quantity}>

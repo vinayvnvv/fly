@@ -188,7 +188,7 @@ export function getStrikePriceForOptionChain(prevData, socketData) {
   return changes;
 }
 
-export function formaToINR(x) {
+export function formaToINR(x, removePlusPrefix) {
   if (x && (typeof x === 'string' || typeof x === 'number')) {
     const num = parseFloat(x);
     const positive = num >= 0;
@@ -205,7 +205,7 @@ export function formaToINR(x) {
       otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ',') +
       lastThree +
       afterPoint;
-    return `${positive ? '+' : '-'}${res}`;
+    return `${positive ? (!removePlusPrefix ? '+' : '') : '-'}${res}`;
   } else {
     return '';
   }
@@ -236,7 +236,12 @@ export function isMarketTime() {
   }
 }
 
-export const exitAllPositions = (positions, symbols, notificationRef) => {
+export const exitAllPositions = (
+  positions,
+  symbols,
+  notificationRef,
+  feeds,
+) => {
   if (!Array.isArray(positions) || positions.length === 0) return;
 
   const activePositions = positions.filter(pos => pos.quantity !== 0);
@@ -245,7 +250,24 @@ export const exitAllPositions = (positions, symbols, notificationRef) => {
   activePositions.forEach(pos => {
     const symbol = symbols[pos.instrument_token];
     if (symbol) {
-      placeUpstoxOrder(symbol, pos.quantity, ORDER.SELL, notificationRef);
+      placeUpstoxOrder(
+        symbol,
+        pos.quantity,
+        ORDER.SELL,
+        notificationRef,
+        feeds,
+      );
+    }
+  });
+};
+
+export const placeBasketOrder = (baskets, symbols, notificationRef, feeds) => {
+  if (!Array.isArray(baskets) || baskets.length === 0) return;
+
+  baskets.forEach(basket => {
+    const symbol = symbols[basket.instrument_key];
+    if (symbol) {
+      placeUpstoxOrder(symbol, basket.value, ORDER.BUY, notificationRef, feeds);
     }
   });
 };
@@ -255,13 +277,16 @@ export function placeUpstoxOrder(
   quantity,
   transaction_type,
   notificationRef,
+  feeds,
 ) {
   const buyAudioRef = document.getElementById('buy-audio');
   const sellAudioRef = document.getElementById('sell-audio');
-  if (!isMarketTime()) {
-    displayErrorNotification(notificationRef, 'Market is closed now');
-    return;
-  }
+  const feed = feeds[symbol?.instrument_key];
+  console.log(symbol);
+  // if (!isMarketTime()) {
+  //   displayErrorNotification(notificationRef, 'Market is closed now');
+  //   return;
+  // }
   if (!(symbol && symbol.instrument_key)) {
     displayErrorNotification(notificationRef, 'symbols not selected');
   }
@@ -273,14 +298,18 @@ export function placeUpstoxOrder(
     );
     return;
   }
+  const limitPrice =
+    transaction_type === ORDER.BUY
+      ? feed?.ltpc?.ltp + 10
+      : feed?.ltpc?.ltp - 10;
   const data = {
     quantity,
     product: 'D',
     validity: 'DAY',
-    price: 0,
+    price: symbol.exchange === 'BSE' ? limitPrice : 0,
     tag: 'string',
     instrument_token: symbol.instrument_key,
-    order_type: 'MARKET',
+    order_type: symbol.exchange === 'BSE' ? 'LIMIT' : 'MARKET',
     transaction_type,
     disclosed_quantity: 0,
     trigger_price: 0,

@@ -75,6 +75,7 @@ const StyledTab = styled(props => <Tab disableRipple {...props} />)(
 );
 const navLinks = [
   { label: 'Home', path: '/' },
+  { label: 'Basket', path: '/basket' },
   { label: 'Orders', path: '/orders' },
   { label: 'Positions', path: '/positions' },
   { label: 'Settings', path: '/settings' },

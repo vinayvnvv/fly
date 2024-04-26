@@ -90,6 +90,8 @@ export const instaBuy = atom({
 export const positions = atom([]);
 export const fundAndMargin = atom({});
 
+export const baskets = atom([]);
+
 export const stores = {
   theme,
   symbols,
@@ -103,4 +105,5 @@ export const stores = {
   symbolQuantityInfo,
   quantitySize,
   quantitySizeInit,
+  baskets,
 };

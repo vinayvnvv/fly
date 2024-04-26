@@ -121,8 +121,17 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   width: `${100 / 3}%`,
 }));
 
-const TableItem = ({ data, active, isLast, ltpStrikePrices, quantity }) => {
+const TableItem = ({
+  data,
+  active,
+  isLast,
+  ltpStrikePrices,
+  quantity,
+  optionAdd,
+  onOptionAdd,
+}) => {
   const { enqueueSnackbar } = useSnackbar();
+  const [feeds] = useAtom(stores.marketFeed);
   let classes = [];
   const { strike, options } = data || {};
   const { CE, PE } = options || {};
@@ -138,8 +147,18 @@ const TableItem = ({ data, active, isLast, ltpStrikePrices, quantity }) => {
   };
 
   const placeOrder = type => {
+    if (optionAdd) {
+      onOptionAdd(options[type]);
+      return;
+    }
     const d = options[type];
-    placeUpstoxOrder(d, quantity || d.lot_size, ORDER.BUY, enqueueSnackbar);
+    placeUpstoxOrder(
+      d,
+      quantity || d.lot_size,
+      ORDER.BUY,
+      enqueueSnackbar,
+      feeds,
+    );
   };
 
   return (
@@ -224,7 +243,7 @@ const TableItem = ({ data, active, isLast, ltpStrikePrices, quantity }) => {
             color="primary"
             onClick={() => placeOrder('CE')}
           >
-            Buy CE
+            {optionAdd ? 'Add CE' : 'Buy CE'}
           </Button>
           <Button
             disableElevation
@@ -232,7 +251,7 @@ const TableItem = ({ data, active, isLast, ltpStrikePrices, quantity }) => {
             color="primary"
             onClick={() => placeOrder('PE')}
           >
-            Buy PE
+            {optionAdd ? 'Add PE' : 'Buy PE'}
           </Button>
         </Box>
       </TableItemRoot>
@@ -246,12 +265,14 @@ const TableItem = ({ data, active, isLast, ltpStrikePrices, quantity }) => {
     </>
   );
 };
-const IndexList = ({
+export const IndexList = ({
   indexTitle,
   data,
   instrumentKey,
   ltpStrikePrices,
   closeDiff,
+  optionAdd,
+  onOptionAdd,
 }) => {
   // console.log('IndexList', indexTitle, data, ltpStrikePrices, instrumentKey);
   const [symbolQuantityInfo] = useAtom(stores.symbolQuantityInfo);
@@ -324,11 +345,14 @@ const IndexList = ({
             active={idx === 2}
             ltpStrikePrices={strikePrice}
             isLast={chain.length === idx + 1}
+            optionAdd={optionAdd}
+            onOptionAdd={onOptionAdd}
           />
         ))}
     </StyledPaper>
   );
 };
+
 const Home = () => {
   const [filteredSymbols] = useAtom(stores.filteredSymbols);
   const [quantitySizeInit] = useAtom(stores.quantitySizeInit);

@@ -48,6 +48,11 @@ class UpStox {
   getFundMargin() {
     return axios.get('/user/get-funds-and-margin');
   }
+  brokerage(instrument_token, quantity, transaction_type, price) {
+    return axios.get(
+      `/charges/brokerage?instrument_token=${instrument_token}&quantity=${quantity}&transaction_type=${transaction_type}&price=${price}&product=D`,
+    );
+  }
   placeOrder(data) {
     return axios({
       url: '/order/place',

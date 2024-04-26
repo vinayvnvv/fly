@@ -20,15 +20,15 @@ export const theme = options => {
         primary: mode === 'light' ? '#222' : '#bbb',
       },
     },
-    // breakpoints: {
-    //   values: {
-    //     xs: 0,
-    //     sm: 600,
-    //     md: 1000,
-    //     lg: 1300,
-    //     xl: 1536,
-    //   },
-    // },
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 600,
+        md: 1000,
+        lg: 1300,
+        xl: 1536,
+      },
+    },
     typography: {
       fontFamily: ['"Open Sans", sans-serif'],
       body1: {
