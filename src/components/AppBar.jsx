@@ -192,7 +192,7 @@ const AppBar = () => {
           </Stack>
           <Box flexGrow={1} />
           <StyledTabs
-            sx={{ mr: 3 }}
+            // sx={{ mr: 3 }}
             value={value}
             onChange={handleChange}
             aria-label="basic tabs example"
@@ -206,7 +206,7 @@ const AppBar = () => {
               />
             ))}
           </StyledTabs>
-          <ThemeSwitch />
+          {/* <ThemeSwitch /> */}
         </AppHeaderToolBar>
       </Container>
     </MUIAppBar>

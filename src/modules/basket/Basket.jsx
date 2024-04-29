@@ -139,7 +139,7 @@ const BasketBox = ({
               <Typography variant="caption" color={'GrayText'}>
                 Charges:
               </Typography>
-              <Typography variant="caption">
+              <Typography variant="caption" sx={{ minWidth: '80px' }}>
                 {formaToINR(calcBrokerage, true)}
               </Typography>
             </Stack>
@@ -163,6 +163,8 @@ const BasketBox = ({
   );
 };
 
+let storedFeeds = {};
+
 const Basket = () => {
   const [baskets, setBaskets] = useAtom(stores.baskets);
   const { enqueueSnackbar } = useSnackbar();
@@ -177,6 +179,11 @@ const Basket = () => {
     [instrumentKeys.FINNIFTY]: 0,
     [instrumentKeys.SENSEX]: 0,
   });
+  useEffect(() => {
+    Object.keys(feeds)?.forEach(feed => {
+      storedFeeds[feed] = feeds[feed];
+    });
+  }, [feeds]);
   // useEffect(() => {
   //   if (baskets && baskets.length > 0) {
   //     baskets.forEach(basket => {
@@ -239,7 +246,8 @@ const Basket = () => {
     let charges = 0;
     if (baskets && baskets.length > 0) {
       baskets.forEach(itm => {
-        charges += itm.value * feeds[itm.instrument_key]?.ltpc?.ltp;
+        const feedLtpc = storedFeeds[itm.instrument_key]?.ltpc?.ltp;
+        charges += itm.value * (feedLtpc || 0);
       });
     }
     return charges;

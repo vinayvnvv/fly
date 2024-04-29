@@ -21,6 +21,7 @@ import { upstoxClient } from './config/upstox';
 import { filterSymbols, getColorWithThemeMode } from './common/utils';
 import SocketUpdate from './SocketUpdate';
 import InitApp from './InitApp';
+import ThemeSwitch from './components/ThemeSwitch';
 
 const StyledMaterialDesignContent = styled(MaterialDesignContent)(
   ({ theme }) => ({
@@ -41,6 +42,12 @@ const StyledMaterialDesignContent = styled(MaterialDesignContent)(
     },
   }),
 );
+
+const Fab = styled(Box)(({ theme }) => ({
+  position: 'fixed',
+  bottom: 31,
+  right: 31,
+}));
 
 function App() {
   const [authToken] = useAtom(token);
@@ -79,6 +86,9 @@ function App() {
             <CircularProgress />
           </Stack>
         )}
+        <Fab>
+          <ThemeSwitch />
+        </Fab>
       </SnackbarProvider>
     </ThemeProvider>
   );
