@@ -48,7 +48,7 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
     // maxWidth: '50px',
     backgroundColor: 'transparent',
     display: 'flex',
-    height: '3px',
+    height: '4px',
     justifyContent: 'center',
     [`&::after`]: {
       content: '" "',
@@ -62,9 +62,10 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
 }));
 const StyledTab = styled(props => <Tab disableRipple {...props} />)(
   ({ theme }) => ({
-    // letterSpacing: '0.02rem',
+    letterSpacing: '0.04rem',
     fontSize: '13px',
-    fontWeight: 500,
+    fontWeight: 400,
+    fontFamily: 'Google',
     [`&:hover`]: {
       color: theme.palette.primary.main,
     },
@@ -103,13 +104,14 @@ const AppBar = () => {
   };
   return (
     <MUIAppBar
-      variant="outlined"
+      // variant="outlined"
       color="transparent"
       elevation={0}
       position="fixed"
       sx={{
         zIndex: theme => theme.zIndex.drawer + 1,
         backgroundColor: 'background.paper',
+        boxShadow: '0 1px 6px 0 rgba(32, 33, 36, 0.28)',
       }}
     >
       <Container>
@@ -168,7 +170,12 @@ const AppBar = () => {
           </Stack>
           <Divider orientation="vertical" sx={{ height: '23px', mx: 1.5 }} />
           <Stack direction={'column'} alignItems={'center'}>
-            <Typography fontSize={12} fontWeight={600} color={'GrayText'}>
+            <Typography
+              fontSize={12}
+              fontWeight={600}
+              color={'GrayText'}
+              fontFamily={'Google'}
+            >
               Mrgn Avail
             </Typography>
             <Typography fontSize={12} fontWeight={600}>

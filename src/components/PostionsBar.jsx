@@ -155,8 +155,6 @@ const PostionsBar = ({ showOnlyProfit, profitTypoStyles, showPercAtInit }) => {
     );
   }
 
-  console.log('positionArray', positionArray);
-
   if (positionArray && positionArray.length === 0) {
     return showOnlyProfit ? (
       <ProfitTypo />

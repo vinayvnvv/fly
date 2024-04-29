@@ -2,6 +2,7 @@ import { useAtom, useSetAtom } from 'jotai';
 import { useEffect, useMemo, useState } from 'react';
 import { MarketDataFeedSocket } from '../../socket/market';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
+import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 import {
   formaToINR,
   getFormattedSymbolName,
@@ -50,6 +51,7 @@ const BasketBox = ({
   placeBasket,
   resetBasket,
   calcBrokerage,
+  refresh,
 }) => {
   return (
     <StyledPaper variant="outlined">
@@ -135,13 +137,30 @@ const BasketBox = ({
             <Button size="large" color="inherit" onClick={resetBasket}>
               Reset
             </Button>
-            <Stack direction={'row'} spacing={1}>
+            <Stack
+              direction={'row'}
+              spacing={1}
+              display={'inline-flex'}
+              alignItems={'center'}
+            >
               <Typography variant="caption" color={'GrayText'}>
-                Charges:
+                Margin:
               </Typography>
-              <Typography variant="caption" sx={{ minWidth: '80px' }}>
-                {formaToINR(calcBrokerage, true)}
-              </Typography>
+              <Stack direction={'row'} alignItems={'center'}>
+                {calcBrokerage && (
+                  <IconButton size="small" onClick={refresh}>
+                    <RefreshRoundedIcon
+                      sx={{
+                        fontSize: 16,
+                        color: theme => theme.palette.primary.main,
+                      }}
+                    />
+                  </IconButton>
+                )}
+                <Typography variant="caption" sx={{ minWidth: '80px' }}>
+                  {formaToINR(calcBrokerage, true)}
+                </Typography>
+              </Stack>
             </Stack>
           </Stack>
         </>
@@ -166,6 +185,7 @@ const BasketBox = ({
 let storedFeeds = {};
 
 const Basket = () => {
+  const [updateState, forceUpdate] = useState();
   const [baskets, setBaskets] = useAtom(stores.baskets);
   const { enqueueSnackbar } = useSnackbar();
   const [symbols] = useAtom(stores.symbolsObjects);
@@ -242,6 +262,10 @@ const Basket = () => {
     setBaskets([]);
   };
 
+  const refresh = () => {
+    forceUpdate({});
+  };
+
   const calcBrokerage = useMemo(() => {
     let charges = 0;
     if (baskets && baskets.length > 0) {
@@ -251,7 +275,7 @@ const Basket = () => {
       });
     }
     return charges;
-  }, [baskets]);
+  }, [baskets, updateState]);
 
   return (
     <>
@@ -263,6 +287,7 @@ const Basket = () => {
           placeBasket={placeBasket}
           calcBrokerage={calcBrokerage}
           resetBasket={resetBasket}
+          refresh={refresh}
         />
 
         <Box sx={{ width: `62.666667%` }}>

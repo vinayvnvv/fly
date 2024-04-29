@@ -1,4 +1,16 @@
 import { createTheme, responsiveFontSizes } from '@mui/material';
+const GoogleBold = new URL(
+  './../assets/fonts/GoogleSans-Bold.ttf',
+  import.meta.url,
+).href;
+const GoogleMedium = new URL(
+  './../assets/fonts/GoogleSans-Medium.ttf',
+  import.meta.url,
+).href;
+const GoogleRegular = new URL(
+  './../assets/fonts/GoogleSans-Regular.ttf',
+  import.meta.url,
+).href;
 
 export const theme = options => {
   const { mode } = options || {};
@@ -43,6 +55,34 @@ export const theme = options => {
             textTransform: 'initial',
           },
         },
+      },
+      MuiCssBaseline: {
+        styleOverrides: `
+        @font-face {
+          font-family: 'Google';
+          src:  url('${GoogleBold}');
+                url('${GoogleBold}');
+          font-weight: 500;
+          font-style: normal;
+          font-display: swap;
+        }
+        @font-face {
+          font-family: 'Google';
+          src:  url('${GoogleRegular}');
+                url('${GoogleRegular}');
+          font-weight: 300;
+          font-style: normal;
+          font-display: swap;
+        }
+        @font-face {
+          font-family: 'Google';
+          src:  url('${GoogleMedium}');
+                url('${GoogleMedium}');
+          font-weight: 400;
+          font-style: normal;
+          font-display: swap;
+        }
+    `,
       },
       MuiTab: {
         styleOverrides: {
