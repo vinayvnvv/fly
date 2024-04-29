@@ -62,7 +62,7 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
 }));
 const StyledTab = styled(props => <Tab disableRipple {...props} />)(
   ({ theme }) => ({
-    letterSpacing: '0.04rem',
+    letterSpacing: '0.02rem',
     fontSize: '13px',
     fontWeight: 400,
     fontFamily: 'Google',

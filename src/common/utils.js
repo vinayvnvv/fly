@@ -283,10 +283,10 @@ export function placeUpstoxOrder(
   const sellAudioRef = document.getElementById('sell-audio');
   const feed = feeds[symbol?.instrument_key];
   console.log(symbol);
-  // if (!isMarketTime()) {
-  //   displayErrorNotification(notificationRef, 'Market is closed now');
-  //   return;
-  // }
+  if (!isMarketTime()) {
+    displayErrorNotification(notificationRef, 'Market is closed now');
+    return;
+  }
   if (!(symbol && symbol.instrument_key)) {
     displayErrorNotification(notificationRef, 'symbols not selected');
   }

@@ -21,7 +21,9 @@ export const theme = options => {
         default: mode === 'dark' ? '#000' : '#f8f9fa',
       },
       primary: {
-        main: '#5a50eb',
+        // main: '#5a50eb',
+        main: '#357095',
+        dark: '#1c3f56',
       },
       error: {
         main: '#ff5722',
