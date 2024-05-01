@@ -261,13 +261,19 @@ export const exitAllPositions = (
   });
 };
 
-export const placeBasketOrder = (baskets, symbols, notificationRef, feeds) => {
+export const placeBasketOrder = (
+  baskets,
+  symbols,
+  notificationRef,
+  feeds,
+  orderType,
+) => {
   if (!Array.isArray(baskets) || baskets.length === 0) return;
 
   baskets.forEach(basket => {
     const symbol = symbols[basket.instrument_key];
     if (symbol) {
-      placeUpstoxOrder(symbol, basket.value, ORDER.BUY, notificationRef, feeds);
+      placeUpstoxOrder(symbol, basket.value, orderType, notificationRef, feeds);
     }
   });
 };

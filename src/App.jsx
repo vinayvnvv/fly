@@ -22,6 +22,7 @@ import { filterSymbols, getColorWithThemeMode } from './common/utils';
 import SocketUpdate from './SocketUpdate';
 import InitApp from './InitApp';
 import ThemeSwitch from './components/ThemeSwitch';
+import PageLoader from './components/PageLoader';
 
 const StyledMaterialDesignContent = styled(MaterialDesignContent)(
   ({ theme }) => ({
@@ -83,7 +84,7 @@ function App() {
             justifyContent={'center'}
             sx={{ height: '100vh' }}
           >
-            <CircularProgress />
+            <PageLoader />
           </Stack>
         )}
         <Fab>

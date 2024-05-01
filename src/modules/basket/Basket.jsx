@@ -16,6 +16,7 @@ import {
   IconButton,
   Paper,
   Stack,
+  Switch,
   TableBody,
   TableCell,
   TableHead,
@@ -25,7 +26,7 @@ import {
   styled,
 } from '@mui/material';
 import Positions from '../positions/Positions';
-import { instrumentKeys } from '../../config';
+import { ORDER, instrumentKeys } from '../../config';
 import { IndexList } from '../home/Home';
 import { stores } from '../../store';
 import { StyledTable } from '../../components/PostionsBar';
@@ -34,6 +35,39 @@ import SocketTypo from '../../components/SocketTypo';
 import { Cancel } from '@mui/icons-material';
 import { useSnackbar } from 'notistack';
 import { upstoxClient } from '../../config/upstox';
+
+const Android12Switch = styled(Switch)(({ theme }) => ({
+  padding: 8,
+  '& .MuiSwitch-track': {
+    borderRadius: 22 / 2,
+    '&::before, &::after': {
+      content: '""',
+      position: 'absolute',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      width: 16,
+      height: 16,
+    },
+    '&::before': {
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+        theme.palette.getContrastText(theme.palette.primary.main),
+      )}" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
+      left: 12,
+    },
+    '&::after': {
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+        theme.palette.getContrastText(theme.palette.primary.main),
+      )}" d="M19,13H5V11H19V13Z" /></svg>')`,
+      right: 12,
+    },
+  },
+  '& .MuiSwitch-thumb': {
+    boxShadow: 'none',
+    width: 16,
+    height: 16,
+    margin: 2,
+  },
+}));
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   borderRadius: '5px',
@@ -52,6 +86,8 @@ const BasketBox = ({
   resetBasket,
   calcBrokerage,
   refresh,
+  setOrderTypeBuy,
+  orderTypeBuy,
 }) => {
   return (
     <StyledPaper variant="outlined">
@@ -126,17 +162,21 @@ const BasketBox = ({
           </Box>
           <Stack
             p={2}
+            pb={0}
             direction={'row'}
-            spacing={2}
+            spacing={4}
             justifyContent={'center'}
             alignItems={'center'}
           >
-            <Button variant="contained" size="large" onClick={placeBasket}>
-              Execute
-            </Button>
-            <Button size="large" color="inherit" onClick={resetBasket}>
-              Reset
-            </Button>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography variant="caption">Sell</Typography>
+              <Android12Switch
+                value={orderTypeBuy}
+                defaultChecked
+                onChange={e => setOrderTypeBuy(e.target.checked)}
+              />
+              <Typography variant="caption">Buy</Typography>
+            </Stack>
             <Stack
               direction={'row'}
               spacing={1}
@@ -163,6 +203,25 @@ const BasketBox = ({
               </Stack>
             </Stack>
           </Stack>
+          <Stack
+            p={2}
+            direction={'row'}
+            spacing={2}
+            justifyContent={'center'}
+            alignItems={'center'}
+          >
+            <Button
+              variant="contained"
+              size="large"
+              onClick={placeBasket}
+              color={orderTypeBuy ? 'primary' : 'error'}
+            >
+              Execute
+            </Button>
+            <Button size="large" color="inherit" onClick={resetBasket}>
+              Reset
+            </Button>
+          </Stack>
         </>
       ) : (
         <Box
@@ -186,6 +245,7 @@ let storedFeeds = {};
 
 const Basket = () => {
   const [updateState, forceUpdate] = useState();
+  const [orderTypeBuy, setOrderTypeBuy] = useState(true);
   const [baskets, setBaskets] = useAtom(stores.baskets);
   const { enqueueSnackbar } = useSnackbar();
   const [symbols] = useAtom(stores.symbolsObjects);
@@ -256,7 +316,8 @@ const Basket = () => {
   };
 
   const placeBasket = () => {
-    placeBasketOrder(baskets, symbols, enqueueSnackbar, feeds);
+    const orderType = orderTypeBuy ? ORDER.BUY : ORDER.SELL;
+    placeBasketOrder(baskets, symbols, enqueueSnackbar, feeds, orderType);
   };
   const resetBasket = () => {
     setBaskets([]);
@@ -288,6 +349,8 @@ const Basket = () => {
           calcBrokerage={calcBrokerage}
           resetBasket={resetBasket}
           refresh={refresh}
+          orderTypeBuy={orderTypeBuy}
+          setOrderTypeBuy={setOrderTypeBuy}
         />
 
         <Box sx={{ width: `62.666667%` }}>

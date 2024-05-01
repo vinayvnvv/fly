@@ -140,7 +140,7 @@ const AppBar = () => {
           <Divider orientation="vertical" sx={{ height: '23px', mx: 1.5 }} />
           <TimeClock />
           <Divider orientation="vertical" sx={{ height: '23px', mx: 1.5 }} />
-          <Stack ml={1}>
+          <Stack ml={1} sx={{ minWidth: '195px' }}>
             <Stack direction={'row'} alignItems={'center'}>
               <Typography fontSize={11} fontWeight={600} mr={0.5}>
                 NIFTY

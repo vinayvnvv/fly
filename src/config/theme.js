@@ -45,6 +45,7 @@ export const theme = options => {
     },
     typography: {
       fontFamily: ['"Open Sans", sans-serif'],
+      // fontFamily: ['Google'],
       body1: {
         fontSize: '0.9rem',
       },
