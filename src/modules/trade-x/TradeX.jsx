@@ -9,7 +9,8 @@ const TradeX = () => {
   const [positions, setPositions] = useState([]);
   const [tokens] = useAtom(stores.tokens);
   const [user, setUser] = useState('');
-  const tokensArr = Object.keys(tokens);
+  const tokensArr =
+    tokens && typeof tokens === 'object' ? Object.keys(tokens) : [];
   const onUserChange = e => {
     const token = e.target.value;
     setUser(token);
