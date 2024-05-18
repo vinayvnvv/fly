@@ -1,4 +1,4 @@
-import { axios } from './../common/axios';
+import { axios, axiosCommon } from './../common/axios';
 
 const {
   VITE_UPSTOX_API_KEY,
@@ -22,15 +22,15 @@ class UpStox {
     }
     return formData;
   }
-  redirectToLogin() {
-    window.location.href = `${upstoxHost}/login/authorization/dialog?response_type=code&client_id=${this.apiKey}&redirect_uri=${this.redirectUrl}`;
+  redirectToLogin(apiKey, redirectUrl) {
+    window.location.href = `${upstoxHost}/login/authorization/dialog?response_type=code&client_id=${apiKey || this.apiKey}&redirect_uri=${redirectUrl || this.redirectUrl}`;
   }
-  getToken(code) {
+  getToken(code, apiKey, apiSecret, redirectUrl) {
     const data = {
       code,
-      client_id: this.apiKey,
-      client_secret: this.apiSecret,
-      redirect_uri: this.redirectUrl,
+      client_id: apiKey || this.apiKey,
+      client_secret: apiSecret || this.apiSecret,
+      redirect_uri: redirectUrl || this.redirectUrl,
       grant_type: 'authorization_code',
     };
     return axios({
@@ -45,6 +45,24 @@ class UpStox {
   getProfile() {
     return axios.get('/user/profile');
   }
+  getMultiProfile(token) {
+    return axiosCommon.get('/user/profile', {
+      headers: { token: token },
+    });
+  }
+  isActiveToken(token, callback) {
+    this.getMultiProfile(token)
+      .then(res => {
+        if (res?.status === 'success') {
+          callback(res?.data);
+        } else {
+          callback(false);
+        }
+      })
+      .catch(err => {
+        callback(false);
+      });
+  }
   getFundMargin() {
     return axios.get('/user/get-funds-and-margin');
   }
@@ -52,6 +70,18 @@ class UpStox {
     return axios.get(
       `/charges/brokerage?instrument_token=${instrument_token}&quantity=${quantity}&transaction_type=${transaction_type}&price=${price}&product=D`,
     );
+  }
+  placeMultiOrder(data, token) {
+    return axiosCommon({
+      url: '/order/place',
+      data,
+      method: 'post',
+      maxBodyLength: Infinity,
+      headers: {
+        Accept: 'application/json',
+        token: token,
+      },
+    });
   }
   placeOrder(data) {
     return axios({
@@ -75,6 +105,17 @@ class UpStox {
     });
   }
 
+  getMultiOrderBook(token) {
+    return axiosCommon({
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: '/order/retrieve-all',
+      headers: {
+        Accept: 'application/json',
+        token: token,
+      },
+    });
+  }
   getOrderBook() {
     return axios({
       method: 'get',
@@ -92,6 +133,17 @@ class UpStox {
       url: '/order/trades/get-trades-for-day',
       headers: {
         Accept: 'application/json',
+      },
+    });
+  }
+  getMultiPositions(token) {
+    return axiosCommon({
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: '/portfolio/short-term-positions',
+      headers: {
+        Accept: 'application/json',
+        token: token,
       },
     });
   }

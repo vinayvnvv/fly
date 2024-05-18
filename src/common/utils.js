@@ -278,21 +278,40 @@ export const placeBasketOrder = (
   });
 };
 
+const placeMultiOrder = data => {
+  try {
+    let tokens = localStorage.getItem('tokens');
+    let status = localStorage.getItem('accountsStatus');
+    status = JSON.parse(status);
+    if (!tokens) return;
+    tokens = JSON.parse(tokens);
+    Object.keys(tokens).forEach(key => {
+      const token = tokens[key];
+      if (token && status[key]) {
+        upstoxClient.placeMultiOrder(data, token);
+      }
+    });
+  } catch (e) {
+    console.log('erro');
+  }
+};
+
 export function placeUpstoxOrder(
   symbol,
   quantity,
   transaction_type,
   notificationRef,
   feeds,
+  executeOnlyForMultiTrade,
 ) {
   const buyAudioRef = document.getElementById('buy-audio');
   const sellAudioRef = document.getElementById('sell-audio');
   const feed = feeds[symbol?.instrument_key];
   console.log(symbol);
-  if (!isMarketTime()) {
-    displayErrorNotification(notificationRef, 'Market is closed now');
-    return;
-  }
+  // if (!isMarketTime()) {
+  //   displayErrorNotification(notificationRef, 'Market is closed now');
+  //   return;
+  // }
   if (!(symbol && symbol.instrument_key)) {
     displayErrorNotification(notificationRef, 'symbols not selected');
   }
@@ -321,6 +340,8 @@ export function placeUpstoxOrder(
     trigger_price: 0,
     is_amo: false,
   };
+  placeMultiOrder(data);
+  if (executeOnlyForMultiTrade) return;
   upstoxClient
     .placeOrder(data)
     .then(res => {
@@ -357,3 +378,26 @@ export function getFormattedSymbolName(symbol) {
 export const formatFundsMarginData = data => {
   return data?.equity ? data.equity : {};
 };
+
+export function removeQueryParams(paramNamesToRemove) {
+  // Get the current URL without the query string
+  let baseUrl =
+    window.location.protocol +
+    '//' +
+    window.location.host +
+    window.location.pathname;
+
+  // Parse the query string into an object
+  let queryParams = new URLSearchParams(window.location.search);
+
+  // Remove specified query parameters
+  paramNamesToRemove.forEach(paramName => {
+    queryParams.delete(paramName);
+  });
+
+  // Construct the new URL
+  let newUrl = baseUrl + '?' + queryParams.toString();
+
+  // Update the URL without specified query parameters
+  history.replaceState({}, document.title, newUrl);
+}

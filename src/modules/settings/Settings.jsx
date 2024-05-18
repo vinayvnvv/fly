@@ -4,6 +4,8 @@ import { useAtom } from 'jotai';
 import { stores } from '../../store';
 import QuantityInput from '../../components/QuantityInput';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
+import { Accounts } from '../../config/accounts';
+import OtherAccounts from './OtherAccounts';
 
 const quanitiesArray = [
   { name: 'Nifty', instrumentKey: instrumentKeys.NIFTY },
@@ -60,6 +62,13 @@ const Settings = () => {
             </Stack>
           ))}
         </Stack>
+      </Box>
+      <Box mt={6}>
+        <Typography variant="subtitle1">Other Accounts</Typography>
+        <Divider sx={{ my: 2 }} />
+        {Accounts.map(account => (
+          <OtherAccounts account={account} key={account.key} />
+        ))}
       </Box>
     </Box>
   );

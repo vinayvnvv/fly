@@ -53,7 +53,13 @@ export const StyledTable = styled(Table)(({ theme }) => ({
   },
 }));
 
-const PostionsBar = ({ showOnlyProfit, profitTypoStyles, showPercAtInit }) => {
+const PostionsBar = ({
+  showOnlyProfit,
+  profitTypoStyles,
+  showPercAtInit,
+  positionsData,
+  token,
+}) => {
   const theme = useTheme();
   const profit = useRef();
   const { enqueueSnackbar } = useSnackbar();
@@ -64,7 +70,8 @@ const PostionsBar = ({ showOnlyProfit, profitTypoStyles, showPercAtInit }) => {
   let totalProfit = 0;
   const [symbols] = useAtom(symbolsObjects);
   const [feeds] = useAtom(stores.marketFeed);
-  const [positions] = useAtom(stores.positions);
+  let [positions] = useAtom(stores.positions);
+  if (positionsData) positions = positionsData;
   const [fundsMargins] = useAtom(stores.fundAndMargin);
   const margin = fundsMargins?.available_margin
     ? fundsMargins?.available_margin + fundsMargins?.used_margin
@@ -160,7 +167,13 @@ const PostionsBar = ({ showOnlyProfit, profitTypoStyles, showPercAtInit }) => {
       <ProfitTypo />
     ) : (
       <Stack
-        sx={{ height: '100%' }}
+        sx={{
+          height: '100%',
+          padding: '30px',
+          backgroundColor: theme => theme.palette.background.paper,
+        }}
+        component={Paper}
+        variant="outlined"
         direction={'column'}
         alignItems={'center'}
         justifyContent={'center'}
@@ -226,7 +239,9 @@ const PostionsBar = ({ showOnlyProfit, profitTypoStyles, showPercAtInit }) => {
                           <OrderChip
                             feeds={feeds}
                             profit={profit.current}
+                            isMultiTrade={positionsData ? true : false}
                             data={pos}
+                            token={token}
                             key={pos.instrument_token}
                           />
                         );

@@ -1,16 +1,9 @@
-import { Box, Container, Toolbar } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import { AppBar } from './components';
-import {
-  Navigate,
-  RouterProvider,
-  useNavigate,
-  Router,
-  Outlet,
-} from 'react-router-dom';
+import { RouterProvider, Outlet } from 'react-router-dom';
 import { router } from './routes.jsx';
 import { token } from './store';
 import { useAtom } from 'jotai';
-import { useEffect } from 'react';
 import { AppHeaderToolBar } from './components/AppBar';
 import PostionsBar from './components/PostionsBar';
 

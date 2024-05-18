@@ -27,6 +27,17 @@ const jsonStorageOptions = {
 export const token = atomWithStorage('token', 'true', storageOptions, {
   getOnInit: true,
 });
+export const tokens = atomWithStorage('tokens', '{}', jsonStorageOptions, {
+  getOnInit: true,
+});
+export const accountsStatus = atomWithStorage(
+  'accountsStatus',
+  '{}',
+  jsonStorageOptions,
+  {
+    getOnInit: true,
+  },
+);
 export const user = atomWithStorage('user', '{}', jsonStorageOptions, {
   getOnInit: true,
 });
@@ -106,4 +117,6 @@ export const stores = {
   quantitySize,
   quantitySizeInit,
   baskets,
+  tokens,
+  accountsStatus,
 };

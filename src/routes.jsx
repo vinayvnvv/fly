@@ -8,6 +8,8 @@ import Orders from './modules/orders/Orders';
 import Positions from './modules/positions/Positions';
 import Settings from './modules/settings/Settings';
 import Basket from './modules/basket/Basket';
+import Accounts from './modules/accounts';
+import TradeX from './modules/trade-x/TradeX';
 
 const AuthRouter = ({ children }) => {
   const [authToken] = useAtom(token);
@@ -22,6 +24,10 @@ const AuthRouter = ({ children }) => {
 
 export const router = AppLayout =>
   createBrowserRouter([
+    {
+      path: '/accounts/:userId',
+      element: <Accounts />,
+    },
     {
       path: '/',
       element: <AppLayout />,
@@ -63,6 +69,14 @@ export const router = AppLayout =>
           element: (
             <AuthRouter>
               <Basket />
+            </AuthRouter>
+          ),
+        },
+        {
+          path: '/trade-x',
+          element: (
+            <AuthRouter>
+              <TradeX />
             </AuthRouter>
           ),
         },

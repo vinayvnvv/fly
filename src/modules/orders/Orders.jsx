@@ -1,7 +1,10 @@
 import {
   Box,
   Chip,
+  MenuItem,
   Paper,
+  Select,
+  Stack,
   Typography,
   alpha,
   lighten,
@@ -22,6 +25,7 @@ import {
   getColorWithThemeMode,
   getFormattedSymbolName,
 } from '../../common/utils';
+import { ShoppingBagOutlined } from '@mui/icons-material';
 
 const StyledTable = styled(Table)(({ theme }) => ({
   [`& .${tableHeadClasses.root}`]: {
@@ -34,27 +38,87 @@ const StyledTable = styled(Table)(({ theme }) => ({
     borderBottomColor: getColorWithThemeMode(
       theme,
       lighten(theme.palette.divider, 0.5),
-      alpha(theme.palette.divider, 0.06),
+      alpha(theme.palette.divider, 0.09),
     ),
   },
 }));
 
 const Orders = () => {
   const [orders, setOrders] = useState();
+  const [tokens] = useAtom(stores.tokens);
   const [symbols] = useAtom(symbolsObjects);
+  const [user, setUser] = useState('me');
   //   const [symbols] = useAtom(stores.symbols);
-  useEffect(() => {
+
+  const getOrders = () => {
     upstoxClient.getOrderBook().then(response => {
       setOrders(response?.data?.reverse());
     });
+  };
+  const getMultiOrders = token => {
+    upstoxClient.getMultiOrderBook(token).then(response => {
+      setOrders(response?.data?.reverse());
+    });
+  };
+  useEffect(() => {
+    getOrders();
   }, []);
-  console.log(orders);
+  const onUserChange = e => {
+    const token = e.target.value;
+    setUser(token);
+    if (token === 'me') {
+      getOrders();
+    } else {
+      getMultiOrders(token);
+    }
+  };
+  if (orders && orders.length === 0) {
+    return (
+      <Stack
+        sx={{
+          height: '100%',
+          padding: '30px',
+          backgroundColor: theme => theme.palette.background.paper,
+        }}
+        component={Paper}
+        variant="outlined"
+        direction={'column'}
+        alignItems={'center'}
+        justifyContent={'center'}
+        spacing={1}
+      >
+        <ShoppingBagOutlined sx={{ fontSize: 54, opacity: 0.5 }} />
+        <Typography color={'GrayText'} variant="h6">
+          No Orders.
+        </Typography>
+      </Stack>
+    );
+  }
   return (
     <Box mt={1}>
-      <Typography variant="subtitle2" mb={2}>
-        Orders {orders?.length > 0 ? `(${orders.length})` : ''}
-      </Typography>
-      <TableContainer component={Paper} variant="outlined">
+      <Stack direction={'row'} alignItems={'center'} spacing={2} mb={2}>
+        <Typography variant="subtitle2">
+          Orders {orders?.length > 0 ? `(${orders.length})` : ''}
+        </Typography>
+        <Select
+          value={user}
+          variant="standard"
+          onChange={onUserChange}
+          size="small"
+          sx={{ minWidth: 120 }}
+        >
+          <MenuItem value={'me'}>Me</MenuItem>
+          {tokens &&
+            typeof tokens === 'object' &&
+            Object.keys(tokens).map(key => (
+              <MenuItem key={key} value={tokens[key]}>
+                {key}
+              </MenuItem>
+            ))}
+        </Select>
+      </Stack>
+
+      <TableContainer component={'div'} variant="outlined">
         <StyledTable
           size="small"
           sx={{ minWidth: 650 }}
@@ -62,6 +126,11 @@ const Orders = () => {
         >
           <TableHead>
             <TableRow>
+              <TableCell align="left">
+                <Typography color={'GrayText'} fontSize={11}>
+                  Time
+                </Typography>
+              </TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>
               <TableCell align="right">
@@ -74,11 +143,7 @@ const Orders = () => {
                   Avg
                 </Typography>
               </TableCell>
-              <TableCell align="right">
-                <Typography color={'GrayText'} fontSize={11}>
-                  Time
-                </Typography>
-              </TableCell>
+
               <TableCell align="right">
                 {' '}
                 <Typography color={'GrayText'} fontSize={11}>
@@ -93,6 +158,11 @@ const Orders = () => {
                 key={row.name}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
+                <TableCell align="left" width={'50px'}>
+                  <Typography fontSize={'12px'}>
+                    {moment(row.order_timestamp).format('hh:mm:ss')}
+                  </Typography>
+                </TableCell>
                 <TableCell component="th" scope="row" width={'38px'}>
                   {row.transaction_type === 'SELL' ||
                   row.status === 'rejected' ? (
@@ -155,11 +225,7 @@ const Orders = () => {
                 <TableCell align="right">
                   <Typography fontSize={'12px'}>{row.average_price}</Typography>
                 </TableCell>
-                <TableCell align="right">
-                  <Typography fontSize={'12px'}>
-                    {moment(row.order_timestamp).format('hh:mm:ss')}
-                  </Typography>
-                </TableCell>
+
                 <TableCell align="right">
                   {' '}
                   <Typography fontSize={'12px'}>{row.order_type}</Typography>

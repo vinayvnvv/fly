@@ -47,7 +47,7 @@ class MarketDataFeed {
         //   'Real: ',
         //   Object.keys(response.feeds).length,
         // );
-        if (this.callback) this.callback(response.feeds);
+        if (this.callback) this.callback(response?.feeds);
         if (this.onCallbacks.size > 0) {
           for (const call of this.onCallbacks) {
             if (call) call(response.feeds);

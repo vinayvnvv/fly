@@ -66,7 +66,7 @@ const OrderChipContainer = styled(TableRow)(({ theme, quantity }) => ({
 
 const orderQuatity = 210;
 
-const OrderChip = ({ data, key, profit, feeds }) => {
+const OrderChip = ({ data, key, profit, feeds, isMultiTrade, token }) => {
   const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
   const [symbols] = useAtom(stores.symbolsObjects);
@@ -118,7 +118,14 @@ const OrderChip = ({ data, key, profit, feeds }) => {
     placeUpstoxOrder(symbol, qty, transaction_type, enqueueSnackbar, feeds);
   };
   const exitAllQtyInSymbol = () => {
-    placeUpstoxOrder(symbol, data.quantity, ORDER.SELL, enqueueSnackbar, feeds);
+    placeUpstoxOrder(
+      symbol,
+      data.quantity,
+      ORDER.SELL,
+      enqueueSnackbar,
+      feeds,
+      token ? true : false,
+    );
   };
   return (
     <OrderChipContainer quantity={data.quantity}>
@@ -164,36 +171,38 @@ const OrderChip = ({ data, key, profit, feeds }) => {
         />
       </TableCell>
       <TableCell align="center" className="always-highlet">
-        <Stack direction={'row'} spacing={1} justifyContent={'flex-end'}>
-          {data.quantity !== 0 && (
+        {!isMultiTrade && (
+          <Stack direction={'row'} spacing={1} justifyContent={'flex-end'}>
+            {data.quantity !== 0 && (
+              <Button
+                disableElevation
+                variant="contained"
+                color="error"
+                onClick={() => placeOrder(ORDER.SELL)}
+              >
+                -
+              </Button>
+            )}
+            <input
+              className="field"
+              onClick={e => console.log(e)}
+              type="number"
+              defaultValue={lotSize}
+              onChange={onQuantityChange}
+              onKeyDown={onQuantityWheelChange}
+              step={lotSize}
+              value={qty}
+              max={orderQuatity}
+            />
             <Button
               disableElevation
               variant="contained"
-              color="error"
-              onClick={() => placeOrder(ORDER.SELL)}
+              onClick={() => placeOrder(ORDER.BUY)}
             >
-              -
+              +
             </Button>
-          )}
-          <input
-            className="field"
-            onClick={e => console.log(e)}
-            type="number"
-            defaultValue={lotSize}
-            onChange={onQuantityChange}
-            onKeyDown={onQuantityWheelChange}
-            step={lotSize}
-            value={qty}
-            max={orderQuatity}
-          />
-          <Button
-            disableElevation
-            variant="contained"
-            onClick={() => placeOrder(ORDER.BUY)}
-          >
-            +
-          </Button>
-        </Stack>
+          </Stack>
+        )}
       </TableCell>
       <TableCell align="right">
         <Typography
