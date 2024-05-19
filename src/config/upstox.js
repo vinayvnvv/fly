@@ -63,6 +63,15 @@ class UpStox {
         callback(false);
       });
   }
+
+  getMultiFundMargin(token) {
+    return axiosCommon.get('/user/get-funds-and-margin', {
+      headers: {
+        Accept: 'application/json',
+        token: token,
+      },
+    });
+  }
   getFundMargin() {
     return axios.get('/user/get-funds-and-margin');
   }

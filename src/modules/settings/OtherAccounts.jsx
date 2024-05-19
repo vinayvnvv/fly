@@ -14,7 +14,10 @@ import { stores } from '../../store';
 import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
 import { upstoxClient } from '../../config/upstox';
-import { ExitToApp } from '@mui/icons-material';
+import { CheckCircle, ExitToApp } from '@mui/icons-material';
+import { formaToINR } from '../../common/utils';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import ErrorIcon from '@mui/icons-material/Error';
 
 const OtherAccounts = ({ key, account }) => {
   const [tokens, setToken] = useAtom(stores.tokens);
@@ -23,7 +26,17 @@ const OtherAccounts = ({ key, account }) => {
   const [loading, setLoading] = useState();
   const [loadingText, setLoadingText] = useState();
   const [text, setText] = useState('');
+  let [funds, setFunds] = useState(false);
   const token = tokens?.[account?.key];
+
+  const getFunds = () => {
+    upstoxClient.getMultiFundMargin(token).then(res => {
+      console.log('getFunds', res);
+      if (res?.data?.equity) {
+        setFunds(res?.data?.equity);
+      }
+    });
+  };
   useEffect(() => {
     setLoading(true);
     if (token) {
@@ -32,6 +45,7 @@ const OtherAccounts = ({ key, account }) => {
         setLoading(false);
         if (user) {
           setActive(token);
+          getFunds();
         } else {
           const _t = tokens;
           delete _t[account?.key];
@@ -66,21 +80,46 @@ const OtherAccounts = ({ key, account }) => {
         </Stack>
       ) : (
         <Stack direction={'row'} alignItems={'center'} spacing={2}>
-          <Typography variant="subtitle2" fontWeight={600}>
+          <Typography
+            variant="subtitle2"
+            fontWeight={600}
+            sx={{ opacity: accountsStatus?.[account.key] ? 1 : 0.4 }}
+          >
             {account.name}
           </Typography>
           <Box>
             {active ? (
               <Stack direction={'row'} alignItems={'center'} spacing={2}>
-                <Chip label="Active" color="success" size="small" />
+                <Chip
+                  icon={<CheckCircle />}
+                  label="Token"
+                  color="success"
+                  size="small"
+                />
                 <Switch
                   checked={accountsStatus?.[account.key] || false}
                   onChange={onAccStatusChange}
                 />
+                {funds && (
+                  <Chip
+                    icon={<AccountBalanceWalletIcon sx={{ fontSize: 16 }} />}
+                    sx={{ pl: 1 }}
+                    label={
+                      funds?.used_margin > 0
+                        ? `${formaToINR(funds?.used_margin, true)} / ${formaToINR(funds?.available_margin + funds?.used_margin, true)}`
+                        : `${formaToINR(funds?.available_margin)}`
+                    }
+                  />
+                )}
               </Stack>
             ) : (
               <Stack direction={'row'} alignItems={'center'} spacing={2}>
-                <Chip label="Not Active" color="error" size="small" />
+                <Chip
+                  icon={<ErrorIcon />}
+                  label="No Token"
+                  color="error"
+                  size="small"
+                />
                 <Button
                   href={account.url}
                   variant="outlined"
