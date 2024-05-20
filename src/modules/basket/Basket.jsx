@@ -380,19 +380,19 @@ const Basket = () => {
         <IndexList
           optionAdd
           onOptionAdd={onOptionAdd}
-          indexTitle={'SENSEX'}
-          ltpStrikePrices={ltpStrikePrices?.[instrumentKeys.SENSEX]}
-          instrumentKey={instrumentKeys.SENSEX}
-          data={filteredSymbols?.sensex}
+          indexTitle={'FIN NIFTY'}
+          ltpStrikePrices={ltpStrikePrices?.[instrumentKeys.FINNIFTY]}
+          instrumentKey={instrumentKeys.FINNIFTY}
+          data={filteredSymbols?.finNifty}
           closeDiff={4}
         />
         <IndexList
           optionAdd
           onOptionAdd={onOptionAdd}
-          indexTitle={'FIN NIFTY'}
-          ltpStrikePrices={ltpStrikePrices?.[instrumentKeys.FINNIFTY]}
-          instrumentKey={instrumentKeys.FINNIFTY}
-          data={filteredSymbols?.finNifty}
+          indexTitle={'SENSEX'}
+          ltpStrikePrices={ltpStrikePrices?.[instrumentKeys.SENSEX]}
+          instrumentKey={instrumentKeys.SENSEX}
+          data={filteredSymbols?.sensex}
           closeDiff={4}
         />
       </Stack>

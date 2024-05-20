@@ -50,7 +50,7 @@ class MarketDataFeed {
         if (this.callback) this.callback(response?.feeds);
         if (this.onCallbacks.size > 0) {
           for (const call of this.onCallbacks) {
-            if (call) call(response.feeds);
+            if (call) call(response?.feeds);
           }
         }
       };

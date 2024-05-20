@@ -1,6 +1,7 @@
 import {
   Box,
   Chip,
+  Divider,
   MenuItem,
   Paper,
   Select,
@@ -72,32 +73,10 @@ const Orders = () => {
       getMultiOrders(token);
     }
   };
-  if (orders && orders.length === 0) {
+  const Title = () => {
     return (
-      <Stack
-        sx={{
-          height: '100%',
-          padding: '30px',
-          backgroundColor: theme => theme.palette.background.paper,
-        }}
-        component={Paper}
-        variant="outlined"
-        direction={'column'}
-        alignItems={'center'}
-        justifyContent={'center'}
-        spacing={1}
-      >
-        <ShoppingBagOutlined sx={{ fontSize: 54, opacity: 0.5 }} />
-        <Typography color={'GrayText'} variant="h6">
-          No Orders.
-        </Typography>
-      </Stack>
-    );
-  }
-  return (
-    <Box mt={1}>
       <Stack direction={'row'} alignItems={'center'} spacing={2} mb={2}>
-        <Typography variant="subtitle2">
+        <Typography variant="subtitle2" sx={{ minWidth: 90 }}>
           Orders {orders?.length > 0 ? `(${orders.length})` : ''}
         </Typography>
         <Select
@@ -117,7 +96,36 @@ const Orders = () => {
             ))}
         </Select>
       </Stack>
-
+    );
+  };
+  if (orders && orders.length === 0) {
+    return (
+      <Box mt={1}>
+        <Title />
+        <Stack
+          sx={{
+            height: '100%',
+            padding: '30px',
+            backgroundColor: theme => theme.palette.background.paper,
+          }}
+          component={Paper}
+          variant="outlined"
+          direction={'column'}
+          alignItems={'center'}
+          justifyContent={'center'}
+          spacing={1}
+        >
+          <ShoppingBagOutlined sx={{ fontSize: 54, opacity: 0.5 }} />
+          <Typography color={'GrayText'} variant="h6">
+            No Orders.
+          </Typography>
+        </Stack>
+      </Box>
+    );
+  }
+  return (
+    <Box mt={1}>
+      <Title />
       <TableContainer component={'div'} variant="outlined">
         <StyledTable
           size="small"
@@ -131,8 +139,9 @@ const Orders = () => {
                   Time
                 </Typography>
               </TableCell>
-              <TableCell></TableCell>
-              <TableCell></TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Type</TableCell>
+              <TableCell>Instrument</TableCell>
               <TableCell align="right">
                 <Typography color={'GrayText'} fontSize={11}>
                   Qty
@@ -147,7 +156,7 @@ const Orders = () => {
               <TableCell align="right">
                 {' '}
                 <Typography color={'GrayText'} fontSize={11}>
-                  Type
+                  at
                 </Typography>
               </TableCell>
             </TableRow>
@@ -164,10 +173,50 @@ const Orders = () => {
                   </Typography>
                 </TableCell>
                 <TableCell component="th" scope="row" width={'38px'}>
-                  {row.transaction_type === 'SELL' ||
-                  row.status === 'rejected' ? (
+                  {row.status === 'rejected' ? (
                     <Chip
                       label={row.status === 'rejected' ? 'REJECTED' : 'SELL'}
+                      size="small"
+                      sx={{
+                        borderRadius: 1,
+                        fontSize: 11,
+                        fontWeight: 500,
+                        color: theme =>
+                          getColorWithThemeMode(
+                            theme,
+                            theme.palette.error.main,
+                            theme.palette.error.dark,
+                          ),
+                        backgroundColor: theme =>
+                          getColorWithThemeMode(
+                            theme,
+                            lighten(theme.palette.error.main, 0.9),
+                            alpha(theme.palette.error.main, 0.1),
+                          ),
+                      }}
+                    />
+                  ) : (
+                    <Chip
+                      label={'SUCCESS'}
+                      size="small"
+                      sx={{
+                        borderRadius: 1,
+                        fontSize: 11,
+                        color: theme => theme.palette.success.main,
+                        backgroundColor: theme =>
+                          getColorWithThemeMode(
+                            theme,
+                            lighten(theme.palette.success.main, 0.9),
+                            alpha(theme.palette.success.main, 0.1),
+                          ),
+                      }}
+                    />
+                  )}
+                </TableCell>
+                <TableCell component="th" scope="row" width={'38px'}>
+                  {row.transaction_type === 'SELL' ? (
+                    <Chip
+                      label={'SELL'}
                       size="small"
                       sx={{
                         borderRadius: 1,
@@ -194,12 +243,12 @@ const Orders = () => {
                       sx={{
                         borderRadius: 1,
                         fontSize: 11,
-                        color: theme => theme.palette.success.main,
+                        color: theme => theme.palette.info.main,
                         backgroundColor: theme =>
                           getColorWithThemeMode(
                             theme,
-                            lighten(theme.palette.success.main, 0.9),
-                            alpha(theme.palette.success.main, 0.1),
+                            lighten(theme.palette.info.main, 0.9),
+                            alpha(theme.palette.info.main, 0.1),
                           ),
                       }}
                     />
@@ -227,8 +276,11 @@ const Orders = () => {
                 </TableCell>
 
                 <TableCell align="right">
-                  {' '}
-                  <Typography fontSize={'12px'}>{row.order_type}</Typography>
+                  <Chip
+                    label={row.order_type}
+                    size="small"
+                    sx={{ fontSize: 11, borderRadius: 1, fontWeight: 500 }}
+                  />
                 </TableCell>
               </TableRow>
             ))}

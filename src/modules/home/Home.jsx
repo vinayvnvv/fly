@@ -35,6 +35,7 @@ import QuantityInput from '../../components/QuantityInput';
 const TableItemRoot = styled(Stack)(({ theme, active, selected }) => ({
   // borderTop: `1px solid ${theme.palette.divider}`,
   margin: '6px',
+  minHeight: '37px',
   position: 'relative',
   alignItems: 'center',
   boxShadow: active
@@ -409,16 +410,16 @@ const Home = () => {
           data={filteredSymbols?.bankNifty}
         />
         <IndexList
-          indexTitle={'SENSEX'}
-          ltpStrikePrices={ltpStrikePrices?.[instrumentKeys.SENSEX]}
-          instrumentKey={instrumentKeys.SENSEX}
-          data={filteredSymbols?.sensex}
-        />
-        <IndexList
           indexTitle={'FIN NIFTY'}
           ltpStrikePrices={ltpStrikePrices?.[instrumentKeys.FINNIFTY]}
           instrumentKey={instrumentKeys.FINNIFTY}
           data={filteredSymbols?.finNifty}
+        />
+        <IndexList
+          indexTitle={'SENSEX'}
+          ltpStrikePrices={ltpStrikePrices?.[instrumentKeys.SENSEX]}
+          instrumentKey={instrumentKeys.SENSEX}
+          data={filteredSymbols?.sensex}
         />
       </Stack>
     </>

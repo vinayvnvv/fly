@@ -44,7 +44,7 @@ const OtherAccounts = ({ key, account }) => {
         console.log('user', user);
         setLoading(false);
         if (user) {
-          setActive(token);
+          setActive(user);
           getFunds();
         } else {
           const _t = tokens;
@@ -90,6 +90,12 @@ const OtherAccounts = ({ key, account }) => {
           <Box>
             {active ? (
               <Stack direction={'row'} alignItems={'center'} spacing={2}>
+                <Chip
+                  label={active?.user_id}
+                  size="small"
+                  color="info"
+                  sx={{ fontWeight: 600 }}
+                />
                 <Chip
                   icon={<CheckCircle />}
                   label="Token"

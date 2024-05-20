@@ -8,7 +8,7 @@ import { formatFundsMarginData } from './common/utils';
 
 const SocketUpdate = ({ onInit }) => {
   const [authToken] = useAtom(token);
-  const [, setMarketFeed] = useAtom(stores.marketFeed);
+  const [feeds, setMarketFeed] = useAtom(stores.marketFeed);
   const setPositions = useSetAtom(stores.positions);
   const setFundsMargin = useSetAtom(stores.fundAndMargin);
 
@@ -25,7 +25,7 @@ const SocketUpdate = ({ onInit }) => {
   useEffect(() => {
     if (authToken) {
       MarketDataFeedSocket.connectWebSocket(data => {
-        setMarketFeed(data);
+        setMarketFeed({ ...feeds, ...data });
         onInit();
       });
       PortFolioSocket.connectWebSocket(data => {

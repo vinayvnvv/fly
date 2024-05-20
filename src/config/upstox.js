@@ -178,7 +178,7 @@ class UpStox {
   }
   getSymbols() {
     return new Promise((resolve, reject) => {
-      fetch('https://fly-node-mzjt.onrender.com/symbols')
+      fetch('https://fly-node.vercel.app/')
         .then(res => res.json())
         .then(res => {
           resolve(res);
