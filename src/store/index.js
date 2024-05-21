@@ -41,6 +41,14 @@ export const accountsStatus = atomWithStorage(
 export const user = atomWithStorage('user', '{}', jsonStorageOptions, {
   getOnInit: true,
 });
+export const basketLists = atomWithStorage(
+  'basketLists',
+  [],
+  jsonStorageOptions,
+  {
+    getOnInit: true,
+  },
+);
 export const theme = atomWithStorage('theme', 'light', storageOptions, {
   getOnInit: true,
 });
@@ -119,4 +127,5 @@ export const stores = {
   baskets,
   tokens,
   accountsStatus,
+  basketLists,
 };

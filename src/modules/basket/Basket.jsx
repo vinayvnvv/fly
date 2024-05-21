@@ -35,6 +35,8 @@ import SocketTypo from '../../components/SocketTypo';
 import { Cancel } from '@mui/icons-material';
 import { useSnackbar } from 'notistack';
 import { upstoxClient } from '../../config/upstox';
+import Tabs from '../../components/Tabs';
+import ManageBasket from './ManageBasket';
 
 const Android12Switch = styled(Switch)(({ theme }) => ({
   padding: 8,
@@ -88,9 +90,27 @@ const BasketBox = ({
   refresh,
   setOrderTypeBuy,
   orderTypeBuy,
+  manageBasket,
+  selectedBasket,
+  setSelectedBasket,
 }) => {
+  const [basketTabs] = useAtom(stores.basketLists);
   return (
     <StyledPaper variant="outlined">
+      <Stack p={1} direction={'row'} alignItems={'center'}>
+        <Box flexGrow={1}>
+          <Tabs
+            items={basketTabs}
+            value={selectedBasket}
+            onChange={(e, v) => setSelectedBasket(v)}
+          />
+        </Box>
+
+        <Button size="small" onClick={manageBasket}>
+          Manage
+        </Button>
+      </Stack>
+
       {Array.isArray(data) && data.length > 0 ? (
         <>
           <Box>
@@ -245,14 +265,24 @@ let storedFeeds = {};
 
 const Basket = () => {
   const [updateState, forceUpdate] = useState();
+  const [basketTabs] = useAtom(stores.basketLists);
+  const [selectedBasket, setSelectedBasket] = useState(0);
+  const [basketManageOpen, setBasketManageOpen] = useState(false);
   const [orderTypeBuy, setOrderTypeBuy] = useState(true);
-  const [baskets, setBaskets] = useAtom(stores.baskets);
+  const [basketsData, setBaskets] = useAtom(stores.baskets);
   const { enqueueSnackbar } = useSnackbar();
   const [symbols] = useAtom(stores.symbolsObjects);
   const [feeds] = useAtom(stores.marketFeed);
   const [filteredSymbols] = useAtom(stores.filteredSymbols);
   const [quantitySizeInit] = useAtom(stores.quantitySizeInit);
   const setQuantitySize = useSetAtom(stores.quantitySize);
+  const selectedBasketId =
+    basketTabs && basketTabs.length > 0 ? basketTabs[selectedBasket].id : -1;
+  const baskets = basketsData?.filter(
+    basket => basket.basketId === selectedBasketId,
+  );
+  console.log('selectedBasketId', selectedBasketId, basketTabs, baskets);
+
   const [ltpStrikePrices, setLtpStrikePrices] = useState({
     [instrumentKeys.BANKNIFTY]: 0,
     [instrumentKeys.NIFTY]: 0,
@@ -260,7 +290,7 @@ const Basket = () => {
     [instrumentKeys.SENSEX]: 0,
   });
   useEffect(() => {
-    Object.keys(feeds)?.forEach(feed => {
+    Object.keys(feeds || {})?.forEach(feed => {
       storedFeeds[feed] = feeds[feed];
     });
   }, [feeds]);
@@ -303,15 +333,30 @@ const Basket = () => {
     const idx = baskets.findIndex(
       itm => itm.instrument_key === d.instrument_key,
     );
-    if (idx === -1) setBaskets([...baskets, { ...d, value: d.lot_size }]);
+    if (idx === -1)
+      setBaskets([
+        ...basketsData,
+        { ...d, value: d.lot_size, basketId: selectedBasketId },
+      ]);
   };
   const onQuantityChnage = (idx, v) => {
-    const _b = [...baskets];
-    _b[idx]['value'] = v;
+    const realIdx = basketsData.findIndex(
+      basket =>
+        basket.instrument_key === baskets[idx].instrument_key &&
+        basket.basketId === selectedBasketId,
+    );
+    const _b = [...basketsData];
+    _b[realIdx]['value'] = v;
     setBaskets(_b);
   };
   const deleteBasket = instrument_key => {
-    const final = baskets.filter(itm => itm.instrument_key !== instrument_key);
+    const final = basketsData.filter(
+      itm =>
+        !(
+          itm.instrument_key === instrument_key &&
+          itm.basketId === selectedBasketId
+        ),
+    );
     setBaskets(final);
   };
 
@@ -320,11 +365,16 @@ const Basket = () => {
     placeBasketOrder(baskets, symbols, enqueueSnackbar, feeds, orderType);
   };
   const resetBasket = () => {
-    setBaskets([]);
+    const data = basketsData?.filter(itm => itm.basketId !== selectedBasketId);
+    setBaskets(data);
   };
 
   const refresh = () => {
     forceUpdate({});
+  };
+
+  const manageBasket = () => {
+    setBasketManageOpen(true);
   };
 
   const calcBrokerage = useMemo(() => {
@@ -351,6 +401,9 @@ const Basket = () => {
           refresh={refresh}
           orderTypeBuy={orderTypeBuy}
           setOrderTypeBuy={setOrderTypeBuy}
+          selectedBasket={selectedBasket}
+          setSelectedBasket={setSelectedBasket}
+          manageBasket={manageBasket}
         />
 
         <Box sx={{ width: `62.666667%` }}>
@@ -396,6 +449,10 @@ const Basket = () => {
           closeDiff={4}
         />
       </Stack>
+      <ManageBasket
+        open={basketManageOpen}
+        onClose={() => setBasketManageOpen(false)}
+      />
     </>
   );
 };
