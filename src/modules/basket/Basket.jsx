@@ -71,7 +71,7 @@ const Android12Switch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
+const StyledPaper = styled(Paper)(() => ({
   borderRadius: '5px',
   flexDirection: 'column',
   justifyContent: 'space-between',
@@ -276,12 +276,14 @@ const Basket = () => {
   const [filteredSymbols] = useAtom(stores.filteredSymbols);
   const [quantitySizeInit] = useAtom(stores.quantitySizeInit);
   const setQuantitySize = useSetAtom(stores.quantitySize);
-  const selectedBasketId =
-    basketTabs && basketTabs.length > 0 ? basketTabs[selectedBasket].id : -1;
-  const baskets = basketsData?.filter(
-    basket => basket.basketId === selectedBasketId,
-  );
-  console.log('selectedBasketId', selectedBasketId, basketTabs, baskets);
+  const selectedBasketId = useMemo(() => {
+    return basketTabs && basketTabs.length > 0
+      ? basketTabs[selectedBasket].id
+      : -1;
+  }, [basketTabs, selectedBasket]);
+  const baskets = useMemo(() => {
+    return basketsData?.filter(basket => basket.basketId === selectedBasketId);
+  }, [basketsData, selectedBasketId]);
 
   const [ltpStrikePrices, setLtpStrikePrices] = useState({
     [instrumentKeys.BANKNIFTY]: 0,

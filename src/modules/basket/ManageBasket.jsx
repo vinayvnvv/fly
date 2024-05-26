@@ -67,8 +67,6 @@ const ManageBasket = ({ onClose, open }) => {
     setBasketsLists(basket);
     setForm(initValues);
   };
-
-  console.log(basketsLists);
   return (
     <Dialog open={open}>
       <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">

@@ -98,8 +98,6 @@ const AppBar = () => {
     }
   }, [location]);
 
-  console.log(location);
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
