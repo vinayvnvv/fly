@@ -19,7 +19,7 @@ import { formaToINR } from '../../common/utils';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import ErrorIcon from '@mui/icons-material/Error';
 
-const OtherAccounts = ({ key, account }) => {
+const OtherAccounts = ({ key, account, mini }) => {
   const [tokens, setToken] = useAtom(stores.tokens);
   const [accountsStatus, setAccountStatus] = useAtom(stores.accountsStatus);
   const [active, setActive] = useState(false);
@@ -29,8 +29,8 @@ const OtherAccounts = ({ key, account }) => {
   let [funds, setFunds] = useState(false);
   const token = tokens?.[account?.key];
 
-  const getFunds = () => {
-    upstoxClient.getMultiFundMargin(token).then(res => {
+  const getFunds = _token => {
+    upstoxClient.getMultiFundMargin(_token || token).then(res => {
       console.log('getFunds', res);
       if (res?.data?.equity) {
         setFunds(res?.data?.equity);
@@ -64,7 +64,8 @@ const OtherAccounts = ({ key, account }) => {
       setLoadingText(false);
       if (user) {
         setToken({ ...tokens, [account?.key]: text });
-        setActive(text);
+        setActive(user);
+        getFunds(text);
       }
     });
   };
@@ -83,30 +84,43 @@ const OtherAccounts = ({ key, account }) => {
           <Typography
             variant="subtitle2"
             fontWeight={600}
-            sx={{ opacity: accountsStatus?.[account.key] ? 1 : 0.4 }}
+            sx={{
+              opacity: accountsStatus?.[account.key] ? 1 : 0.4,
+              width: mini ? '170px' : 'auto',
+              whiteSpace: mini ? 'nowrap' : 'initial',
+              overflow: mini ? 'hidden' : 'initial',
+              textOverflow: mini ? 'ellipsis' : 'initial',
+            }}
           >
             {account.name}
           </Typography>
           <Box>
             {active ? (
               <Stack direction={'row'} alignItems={'center'} spacing={2}>
-                <Chip
-                  label={active?.user_id}
-                  size="small"
-                  color="info"
-                  sx={{ fontWeight: 600 }}
-                />
+                {!mini && (
+                  <>
+                    <Chip
+                      label={active?.user_id}
+                      size="small"
+                      color="info"
+                      sx={{ fontWeight: 600 }}
+                    />
+                  </>
+                )}
+
                 <Chip
                   icon={<CheckCircle />}
                   label="Token"
                   color="success"
                   size="small"
                 />
+
                 <Switch
+                  size="small"
                   checked={accountsStatus?.[account.key] || false}
                   onChange={onAccStatusChange}
                 />
-                {funds && (
+                {funds && !mini && (
                   <Chip
                     icon={<AccountBalanceWalletIcon sx={{ fontSize: 16 }} />}
                     sx={{ pl: 1 }}
@@ -126,32 +140,36 @@ const OtherAccounts = ({ key, account }) => {
                   color="error"
                   size="small"
                 />
-                <Button
-                  href={account.url}
-                  variant="outlined"
-                  target="_blank"
-                  endIcon={<ExitToApp fontSize="small" />}
-                >
-                  Login
-                </Button>
-                <TextField
-                  size="small"
-                  value={text}
-                  onChange={e => setText(e.target.value)}
-                  placeholder="Add Token"
-                  InputProps={{
-                    endAdornment: (
-                      <Button
-                        onClick={addToken}
-                        size="small"
-                        disableElevation
-                        variant="contained"
-                      >
-                        {loadingText ? 'loading' : '+ Add'}
-                      </Button>
-                    ),
-                  }}
-                />
+                {!mini && (
+                  <>
+                    <Button
+                      href={account.url}
+                      variant="outlined"
+                      target="_blank"
+                      endIcon={<ExitToApp fontSize="small" />}
+                    >
+                      Login
+                    </Button>
+                    <TextField
+                      size="small"
+                      value={text}
+                      onChange={e => setText(e.target.value)}
+                      placeholder="Add Token"
+                      InputProps={{
+                        endAdornment: (
+                          <Button
+                            onClick={addToken}
+                            size="small"
+                            disableElevation
+                            variant="contained"
+                          >
+                            {loadingText ? 'loading' : '+ Add'}
+                          </Button>
+                        ),
+                      }}
+                    />
+                  </>
+                )}
               </Stack>
             )}
           </Box>

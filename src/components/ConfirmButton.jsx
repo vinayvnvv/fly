@@ -1,5 +1,6 @@
 import { Cancel, CancelOutlined } from '@mui/icons-material';
 import { Button, Grow, IconButton, Slide, Stack, styled } from '@mui/material';
+import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import { useRef, useState } from 'react';
 
 const StyledStack = styled(Stack)(({ theme }) => ({
@@ -68,6 +69,7 @@ const ConfirmButton = ({ confirmText, children, onConfirm, ...props }) => {
               className="confirm_btn"
               variant="contained"
               onClick={onOk}
+              sx={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
               size={props.size ? props.size : 'medium'}
               color="success"
             >

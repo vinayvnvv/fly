@@ -6,6 +6,7 @@ import { token } from './store';
 import { useAtom } from 'jotai';
 import { AppHeaderToolBar } from './components/AppBar';
 import PostionsBar from './components/PostionsBar';
+import AccountStatus from './components/AccountStatus';
 
 const buyMp3 = new URL('./assets/buy.mp3', import.meta.url).href;
 const sellMp3 = new URL('./assets/sell.mp3', import.meta.url).href;
@@ -22,6 +23,7 @@ const AppLayout = () => {
       </Container>
       <audio style={{ display: 'none' }} id="buy-audio" src={buyMp3} />
       <audio style={{ display: 'none' }} id="sell-audio" src={sellMp3} />
+      <AccountStatus />
     </Box>
   );
 };

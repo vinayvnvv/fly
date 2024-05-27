@@ -282,6 +282,7 @@ const Basket = () => {
       : -1;
   }, [basketTabs, selectedBasket]);
   const baskets = useMemo(() => {
+    if (!basketsData) return [];
     return basketsData?.filter(basket => basket.basketId === selectedBasketId);
   }, [basketsData, selectedBasketId]);
 

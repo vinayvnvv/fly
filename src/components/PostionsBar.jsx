@@ -109,8 +109,15 @@ const PostionsBar = ({
   calcProfit();
   totalProfit = totalProfit.toFixed(2);
 
-  const exitAll = () => {
-    exitAllPositions(positions?.data, symbols, enqueueSnackbar, feeds);
+  const exitAll = exitHalf => {
+    exitAllPositions(
+      positions?.data,
+      symbols,
+      enqueueSnackbar,
+      feeds,
+      exitHalf,
+      positionsData ? true : false,
+    );
   };
 
   const percProfit = ((totalProfit * 100) / margin).toFixed(2);
@@ -261,7 +268,7 @@ const PostionsBar = ({
               >
                 <Stack direction={'row'} alignItems={'center'}>
                   {positionExists && (
-                    <Stack direction={'row'} alignItems={'center'}>
+                    <Stack direction={'row'} alignItems={'center'} spacing={1}>
                       <ConfirmButton
                         variant="contained"
                         disableElevation
@@ -273,13 +280,24 @@ const PostionsBar = ({
                       >
                         Exit all
                       </ConfirmButton>
+                      <ConfirmButton
+                        variant="outlined"
+                        disableElevation
+                        size="small"
+                        sx={{ minWidth: '87px' }}
+                        startIcon={<LogoutIcon />}
+                        confirmText={'Confirm'}
+                        onConfirm={() => exitAll(true)}
+                      >
+                        Exit Half
+                      </ConfirmButton>
                       <Divider
                         orientation="vertical"
                         sx={{ height: '23px', mx: 1.5 }}
                       />
                     </Stack>
                   )}
-                  <Stack direction={'row'} alignItems={'center'}>
+                  <Stack direction={'row'} alignItems={'center'} ml={1.5}>
                     <FormGroup>
                       <FormControlLabel
                         control={

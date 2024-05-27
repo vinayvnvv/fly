@@ -1,12 +1,9 @@
 import { Typography } from '@mui/material';
-import { fyersModel } from 'fyers-web-sdk-v3';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
 import { stores, token } from '../../store';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { fyers } from '../../config/fyers';
 import { upstoxClient } from '../../config/upstox';
-const SECRET_KEY = 'KJ5JCYWEAU';
 
 const Login = () => {
   const [authToken, setToken] = useAtom(token);

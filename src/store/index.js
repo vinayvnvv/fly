@@ -14,7 +14,21 @@ const storageOptions = {
 };
 const jsonStorageOptions = {
   getItem(key) {
-    return JSON.parse(localStorage.getItem(key));
+    const v = localStorage.getItem(key);
+    return v ? JSON.parse(v) : v;
+  },
+  setItem(key, value) {
+    return localStorage.setItem(key, JSON.stringify(value));
+  },
+  removeItem(key) {
+    localStorage.removeItem(key);
+  },
+};
+
+const jsonStorageArrayOptions = {
+  getItem(key) {
+    const v = localStorage.getItem(key);
+    return v ? JSON.parse(v) : [];
   },
   setItem(key, value) {
     return localStorage.setItem(key, JSON.stringify(value));
@@ -109,7 +123,9 @@ export const instaBuy = atom({
 export const positions = atom([]);
 export const fundAndMargin = atom({});
 
-export const baskets = atom([]);
+export const baskets = atomWithStorage('baskets', [], jsonStorageArrayOptions, {
+  getOnInit: true,
+});
 
 export const stores = {
   theme,

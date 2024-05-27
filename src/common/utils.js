@@ -251,6 +251,8 @@ export const exitAllPositions = (
   symbols,
   notificationRef,
   feeds,
+  exitHalf,
+  isOnlyOnMultiTrade,
 ) => {
   if (!Array.isArray(positions) || positions.length === 0) return;
 
@@ -262,10 +264,11 @@ export const exitAllPositions = (
     if (symbol) {
       placeUpstoxOrder(
         symbol,
-        pos.quantity,
+        exitHalf ? getHalfQty(pos.quantity, symbol.lot_size) : pos.quantity,
         ORDER.SELL,
         notificationRef,
         feeds,
+        isOnlyOnMultiTrade,
       );
     }
   });
@@ -410,4 +413,16 @@ export function removeQueryParams(paramNamesToRemove) {
 
   // Update the URL without specified query parameters
   history.replaceState({}, document.title, newUrl);
+}
+
+export function getHalfQty(qty, size, isNearestDown) {
+  const halfSize = qty / 2;
+  const moduleN = halfSize % size;
+  const halfQty =
+    moduleN === 0
+      ? halfSize
+      : isNearestDown
+        ? halfSize - moduleN
+        : halfSize + moduleN;
+  return halfQty;
 }
