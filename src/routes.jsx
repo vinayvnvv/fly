@@ -10,6 +10,7 @@ import Settings from './modules/settings/Settings';
 import Basket from './modules/basket/Basket';
 import Accounts from './modules/accounts';
 import TradeX from './modules/trade-x/TradeX';
+import ChartComponent from './modules/chart/Chart';
 
 const AuthRouter = ({ children }) => {
   const [authToken] = useAtom(token);
@@ -27,6 +28,10 @@ export const router = AppLayout =>
     {
       path: '/accounts/:userId',
       element: <Accounts />,
+    },
+    {
+      path: '/chart',
+      element: <ChartComponent />,
     },
     {
       path: '/',

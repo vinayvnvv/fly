@@ -94,6 +94,13 @@ export const theme = options => {
           },
         },
       },
+      MuiToggleButton: {
+        styleOverrides: {
+          root: {
+            textTransform: 'initial',
+          },
+        },
+      },
     },
   });
   return responsiveFontSizes(_theme);

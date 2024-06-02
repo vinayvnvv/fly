@@ -426,3 +426,39 @@ export function getHalfQty(qty, size, isNearestDown) {
         : halfSize + moduleN;
   return halfQty;
 }
+
+export const formatCandles = candleData => {
+  let candles = candleData?.data?.candles || [];
+  if (Array.isArray(candles)) {
+    candles = candles
+      .map(candle => {
+        return {
+          open: candle[1],
+          high: candle[2],
+          low: candle[3],
+          close: candle[4],
+          time: moment(candle[0]).unix(),
+          date: moment(candle[0]),
+        };
+      })
+      .reverse();
+  }
+  return candles;
+};
+
+export function splitArray(array, index) {
+  // Ensure the index is within the bounds of the array
+  if (index < 0 || index > array.length) {
+    throw new Error('Index out of bounds');
+  }
+
+  // Slice the array into two parts
+  const firstPart = array.slice(0, index);
+  const secondPart = array.slice(index);
+
+  return [firstPart, secondPart];
+}
+
+export function findFirstOccurrenceDateIndex(array, targetDate) {
+  return array.findIndex(item => item.date.isSameOrAfter(targetDate, 'minute'));
+}

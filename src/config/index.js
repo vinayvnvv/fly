@@ -19,3 +19,9 @@ export const ORDER = {
   BUY: 'BUY',
   SELL: 'SELL',
 };
+
+export const ChartTimeFrames = {
+  MINUTE: '1minute',
+  DAY: 'day',
+  MINUTE5: '5minute',
+};

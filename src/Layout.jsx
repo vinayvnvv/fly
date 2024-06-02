@@ -5,7 +5,6 @@ import { router } from './routes.jsx';
 import { token } from './store';
 import { useAtom } from 'jotai';
 import { AppHeaderToolBar } from './components/AppBar';
-import PostionsBar from './components/PostionsBar';
 import AccountStatus from './components/AccountStatus';
 
 const buyMp3 = new URL('./assets/buy.mp3', import.meta.url).href;

@@ -197,6 +197,16 @@ class UpStox {
       },
     });
   }
+  getHistoricalCandle(instrument_key, interval, to_date, from_date) {
+    return axios({
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `/historical-candle/${instrument_key}/${interval}/${to_date}/${from_date}`,
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+  }
   getPortfolioStreamForSocket(updateType) {
     return axios({
       method: 'get',
