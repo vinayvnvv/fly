@@ -127,6 +127,15 @@ export const baskets = atomWithStorage('baskets', [], jsonStorageArrayOptions, {
   getOnInit: true,
 });
 
+export const mainAccountActive = atomWithStorage(
+  'mainAccountActive',
+  false,
+  storageOptions,
+  {
+    getOnInit: true,
+  },
+);
+
 export const stores = {
   theme,
   symbols,
@@ -144,4 +153,5 @@ export const stores = {
   tokens,
   accountsStatus,
   basketLists,
+  mainAccountActive,
 };

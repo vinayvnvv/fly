@@ -6,7 +6,10 @@ const AxiosCommon = Axios.create();
 // Add a request interceptor
 AxiosMain.interceptors.request.use(
   function (config) {
-    const token = localStorage.getItem('token');
+    const mainAccountActive = localStorage.getItem('mainAccountActive');
+    const token = mainAccountActive
+      ? mainAccountActive
+      : localStorage.getItem('token');
     const _token = config.headers['token'];
     config.headers['Authorization'] = 'Bearer ' + (_token || token);
     config.headers['Accept'] = '*/*';
@@ -44,6 +47,7 @@ AxiosMain.interceptors.response.use(
       localStorage.removeItem('user');
       localStorage.removeItem('symbols');
       localStorage.removeItem('token');
+      localStorage.removeItem('mainAccountActive');
       window.location.href = window.location.origin;
     }
     return Promise.reject(error);

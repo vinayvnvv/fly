@@ -3,6 +3,8 @@ import {
   Button,
   Chip,
   Divider,
+  FormControlLabel,
+  FormGroup,
   IconButton,
   Skeleton,
   Stack,
@@ -21,6 +23,9 @@ import ErrorIcon from '@mui/icons-material/Error';
 
 const OtherAccounts = ({ key, account, mini }) => {
   const [tokens, setToken] = useAtom(stores.tokens);
+  const [mainAccountActive, setMainAccountActive] = useAtom(
+    stores.mainAccountActive,
+  );
   const [accountsStatus, setAccountStatus] = useAtom(stores.accountsStatus);
   const [active, setActive] = useState(false);
   const [loading, setLoading] = useState();
@@ -71,6 +76,22 @@ const OtherAccounts = ({ key, account, mini }) => {
   };
   const onAccStatusChange = e => {
     setAccountStatus({ ...accountsStatus, [account?.key]: e.target.checked });
+  };
+  const onMainAccActiveChange = e => {
+    const { checked } = e.target;
+    if (checked) {
+      const status = {};
+      if (typeof accountsStatus === 'object') {
+        Object.keys(accountsStatus).map(key => {
+          status[key] = false;
+        });
+        setAccountStatus(status);
+      }
+    }
+    setMainAccountActive(checked ? token : '');
+    setTimeout(() => {
+      location.reload();
+    }, 400);
   };
   return (
     <Box key={key}>
@@ -130,6 +151,20 @@ const OtherAccounts = ({ key, account, mini }) => {
                         : `${formaToINR(funds?.available_margin)}`
                     }
                   />
+                )}
+                {!mini && (
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          size="small"
+                          checked={mainAccountActive ? true : false}
+                          onChange={onMainAccActiveChange}
+                        />
+                      }
+                      label="Main Account"
+                    />
+                  </FormGroup>
                 )}
               </Stack>
             ) : (

@@ -23,6 +23,7 @@ import { instrumentKeys } from '../config';
 import { useAtom } from 'jotai';
 import { stores } from '../store';
 import PostionsBar from './PostionsBar';
+import MainAccountStatus from './MainAccountStatus';
 
 export const appBarHeight = {
   mobile: 40,
@@ -80,12 +81,12 @@ const navLinks = [
   { label: 'Orders', path: '/orders' },
   { label: 'Positions', path: '/positions' },
   { label: 'Pos X', path: '/trade-x' },
-  { label: 'Chart', path: '/chart' },
   { label: 'Settings', path: '/settings' },
 ];
 const AppBar = () => {
   const [value, setValue] = useState(0);
   const [fundsMargins] = useAtom(stores.fundAndMargin);
+  const [mainAccountStatus] = useAtom(stores.mainAccountActive);
 
   const location = useLocation();
 
@@ -103,120 +104,124 @@ const AppBar = () => {
     setValue(newValue);
   };
   return (
-    <MUIAppBar
-      // variant="outlined"
-      color="transparent"
-      elevation={0}
-      position="fixed"
-      sx={{
-        zIndex: theme => theme.zIndex.drawer + 1,
-        backgroundColor: 'background.paper',
-        boxShadow: '0 1px 6px 0 rgba(32, 33, 36, 0.28)',
-      }}
-    >
-      <Container>
-        <AppHeaderToolBar disableGutters>
-          <Typography
-            noWrap
-            component="div"
-            sx={{
-              fontWeight: 900,
-              fontSize: '23px',
-              color: theme => theme.palette.primary.main,
-              textShadow: theme => `1px -1px ${theme.palette.primary.main}`,
-              letterSpacing: `0.12px`,
-              transform: 'rotateZ(-8deg)',
-              borderRadius: '50px',
-              width: '40px',
-              height: '40px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: theme => `1px solid ${theme.palette.primary.main}`,
-            }}
-          >
-            fly
-          </Typography>
-          <Divider orientation="vertical" sx={{ height: '23px', mx: 1.5 }} />
-          <TimeClock />
-          <Divider orientation="vertical" sx={{ height: '23px', mx: 1.5 }} />
-          <Stack ml={1} sx={{ minWidth: '195px' }}>
-            <Stack direction={'row'} alignItems={'center'}>
-              <Typography fontSize={11} fontWeight={600} mr={0.5}>
-                NIFTY
-              </Typography>
-              <SocketTypo
-                fontSize={11}
-                isBold
-                fontWeight={600}
-                showWithPerc
-                showChangeDiff
-                instrumentKey={instrumentKeys.NIFTY}
-              />
-            </Stack>
-            <Stack direction={'row'} alignItems={'center'}>
-              <Typography fontSize={11} fontWeight={600} mr={0.5}>
-                BANKNIFTY
-              </Typography>
-              <SocketTypo
-                fontSize={11}
-                isBold
-                showWithPerc
-                showChangeDiff
-                fontWeight={600}
-                instrumentKey={instrumentKeys.BANKNIFTY}
-              />
-            </Stack>
-          </Stack>
-          <Divider orientation="vertical" sx={{ height: '23px', mx: 1.5 }} />
-          <Stack direction={'column'} alignItems={'center'}>
+    <>
+      {mainAccountStatus && <MainAccountStatus />}
+      <MUIAppBar
+        // variant="outlined"
+        color="transparent"
+        elevation={0}
+        position="fixed"
+        sx={{
+          zIndex: theme => theme.zIndex.drawer + 1,
+          backgroundColor: 'background.paper',
+          boxShadow: '0 1px 6px 0 rgba(32, 33, 36, 0.28)',
+          top: mainAccountStatus ? '17px' : '0px',
+        }}
+      >
+        <Container>
+          <AppHeaderToolBar disableGutters>
             <Typography
-              fontSize={12}
-              fontWeight={600}
-              color={'GrayText'}
-              fontFamily={'Google'}
-            >
-              Mrgn Avail
-            </Typography>
-            <Typography fontSize={12} fontWeight={600}>
-              {formaToINR(fundsMargins?.available_margin)}
-            </Typography>
-          </Stack>
-          <Divider orientation="vertical" sx={{ height: '23px', mx: 1.5 }} />
-          <Stack direction={'column'} alignItems={'flex-start'}>
-            <Typography fontSize={9} fontWeight={600} color={'GrayText'}>
-              PL
-            </Typography>
-            <PostionsBar
-              showPercAtInit
-              showOnlyProfit
-              profitTypoStyles={{
-                minWidth: '0px',
-                paddingRight: '0px',
-                fontSize: '19px',
+              noWrap
+              component="div"
+              sx={{
+                fontWeight: 900,
+                fontSize: '23px',
+                color: theme => theme.palette.primary.main,
+                textShadow: theme => `1px -1px ${theme.palette.primary.main}`,
+                letterSpacing: `0.12px`,
+                transform: 'rotateZ(-8deg)',
+                borderRadius: '50px',
+                width: '40px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: theme => `1px solid ${theme.palette.primary.main}`,
               }}
-            />
-          </Stack>
-          <Box flexGrow={1} />
-          <StyledTabs
-            // sx={{ mr: 3 }}
-            value={value}
-            onChange={handleChange}
-            aria-label="basic tabs example"
-          >
-            {navLinks.map(nav => (
-              <StyledTab
-                key={nav.path}
-                label={nav.label}
-                component={NavLink}
-                to={nav.path}
+            >
+              fly
+            </Typography>
+            <Divider orientation="vertical" sx={{ height: '23px', mx: 1.5 }} />
+            <TimeClock />
+            <Divider orientation="vertical" sx={{ height: '23px', mx: 1.5 }} />
+            <Stack ml={1} sx={{ minWidth: '195px' }}>
+              <Stack direction={'row'} alignItems={'center'}>
+                <Typography fontSize={11} fontWeight={600} mr={0.5}>
+                  NIFTY
+                </Typography>
+                <SocketTypo
+                  fontSize={11}
+                  isBold
+                  fontWeight={600}
+                  showWithPerc
+                  showChangeDiff
+                  instrumentKey={instrumentKeys.NIFTY}
+                />
+              </Stack>
+              <Stack direction={'row'} alignItems={'center'}>
+                <Typography fontSize={11} fontWeight={600} mr={0.5}>
+                  BANKNIFTY
+                </Typography>
+                <SocketTypo
+                  fontSize={11}
+                  isBold
+                  showWithPerc
+                  showChangeDiff
+                  fontWeight={600}
+                  instrumentKey={instrumentKeys.BANKNIFTY}
+                />
+              </Stack>
+            </Stack>
+            <Divider orientation="vertical" sx={{ height: '23px', mx: 1.5 }} />
+            <Stack direction={'column'} alignItems={'center'}>
+              <Typography
+                fontSize={12}
+                fontWeight={600}
+                color={'GrayText'}
+                fontFamily={'Google'}
+              >
+                Mrgn Avail
+              </Typography>
+              <Typography fontSize={12} fontWeight={600}>
+                {formaToINR(fundsMargins?.available_margin)}
+              </Typography>
+            </Stack>
+            <Divider orientation="vertical" sx={{ height: '23px', mx: 1.5 }} />
+            <Stack direction={'column'} alignItems={'flex-start'}>
+              <Typography fontSize={9} fontWeight={600} color={'GrayText'}>
+                PL
+              </Typography>
+              <PostionsBar
+                showPercAtInit
+                showOnlyProfit
+                profitTypoStyles={{
+                  minWidth: '0px',
+                  paddingRight: '0px',
+                  fontSize: '19px',
+                }}
               />
-            ))}
-          </StyledTabs>
-          {/* <ThemeSwitch /> */}
-        </AppHeaderToolBar>
-      </Container>
-    </MUIAppBar>
+            </Stack>
+            <Box flexGrow={1} />
+            <StyledTabs
+              // sx={{ mr: 3 }}
+              value={value}
+              onChange={handleChange}
+              aria-label="basic tabs example"
+            >
+              {navLinks.map(nav => (
+                <StyledTab
+                  key={nav.path}
+                  label={nav.label}
+                  component={NavLink}
+                  to={nav.path}
+                />
+              ))}
+            </StyledTabs>
+            {/* <ThemeSwitch /> */}
+          </AppHeaderToolBar>
+        </Container>
+      </MUIAppBar>
+    </>
   );
 };
 

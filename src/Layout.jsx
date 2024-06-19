@@ -6,6 +6,7 @@ import { token } from './store';
 import { useAtom } from 'jotai';
 import { AppHeaderToolBar } from './components/AppBar';
 import AccountStatus from './components/AccountStatus';
+import MainAccountStatus from './components/MainAccountStatus';
 
 const buyMp3 = new URL('./assets/buy.mp3', import.meta.url).href;
 const sellMp3 = new URL('./assets/sell.mp3', import.meta.url).href;
