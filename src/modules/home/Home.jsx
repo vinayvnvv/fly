@@ -274,6 +274,7 @@ export const IndexList = ({
   closeDiff,
   optionAdd,
   onOptionAdd,
+  hideQtyInput,
 }) => {
   // console.log('IndexList', indexTitle, data, ltpStrikePrices, instrumentKey);
   const [symbolQuantityInfo] = useAtom(stores.symbolQuantityInfo);
@@ -329,11 +330,13 @@ export const IndexList = ({
               fontSize="small"
             />
           </IconButton>
-          <QuantityInput
-            quantityInfo={quantityInfo}
-            value={quantitySize?.[instrumentKey]}
-            onChange={onChangeQuantitySize}
-          />
+          {!hideQtyInput && (
+            <QuantityInput
+              quantityInfo={quantityInfo}
+              value={quantitySize?.[instrumentKey]}
+              onChange={onChangeQuantitySize}
+            />
+          )}
         </Stack>
       </Box>
       <Divider />

@@ -423,6 +423,7 @@ const Basket = () => {
           instrumentKey={instrumentKeys.NIFTY}
           data={filteredSymbols?.nifty}
           closeDiff={4}
+          hideQtyInput
         />
         <IndexList
           optionAdd
@@ -432,6 +433,7 @@ const Basket = () => {
           instrumentKey={instrumentKeys.BANKNIFTY}
           data={filteredSymbols?.bankNifty}
           closeDiff={4}
+          hideQtyInput
         />
         <IndexList
           optionAdd
@@ -441,6 +443,7 @@ const Basket = () => {
           instrumentKey={instrumentKeys.FINNIFTY}
           data={filteredSymbols?.finNifty}
           closeDiff={4}
+          hideQtyInput
         />
         <IndexList
           optionAdd
@@ -450,6 +453,7 @@ const Basket = () => {
           instrumentKey={instrumentKeys.SENSEX}
           data={filteredSymbols?.sensex}
           closeDiff={4}
+          hideQtyInput
         />
       </Stack>
       <ManageBasket
