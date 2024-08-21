@@ -1,3 +1,4 @@
+import { formatCandles } from '../common/utils';
 import { axios, axiosCommon } from './../common/axios';
 
 const {
@@ -198,13 +199,26 @@ class UpStox {
     });
   }
   getHistoricalCandle(instrument_key, interval, to_date, from_date) {
-    return axios({
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: `/historical-candle/${instrument_key}/${interval}/${to_date}/${from_date}`,
-      headers: {
-        Accept: 'application/json',
-      },
+    return new Promise((resolve, reject) => {
+      axios({
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `/historical-candle/${instrument_key}/${interval}/${to_date}/${from_date}`,
+        headers: {
+          Accept: 'application/json',
+        },
+      })
+        .then(res => {
+          const data = formatCandles(res);
+          axios({
+            method: 'GET',
+            url: `/historical-candle/intraday/${instrument_key}/${interval}`,
+          }).then(res => {
+            const intraday = formatCandles(res);
+            resolve([...data, ...intraday]);
+          });
+        })
+        .catch(err => reject(err));
     });
   }
   getPortfolioStreamForSocket(updateType) {

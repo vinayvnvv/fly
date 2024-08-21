@@ -11,6 +11,7 @@ import Basket from './modules/basket/Basket';
 import Accounts from './modules/accounts';
 import TradeX from './modules/trade-x/TradeX';
 import ChartComponent from './modules/chart/Chart';
+import OptionTrade from './modules/option-trade/OptionTrade';
 
 const AuthRouter = ({ children }) => {
   const [authToken] = useAtom(token);
@@ -78,10 +79,26 @@ export const router = AppLayout =>
           ),
         },
         {
+          path: '/option-trade',
+          element: (
+            <AuthRouter>
+              <OptionTrade />
+            </AuthRouter>
+          ),
+        },
+        {
           path: '/trade-x',
           element: (
             <AuthRouter>
               <TradeX />
+            </AuthRouter>
+          ),
+        },
+        {
+          path: '/option-trade/:instrumentId',
+          element: (
+            <AuthRouter>
+              <OptionTrade />
             </AuthRouter>
           ),
         },

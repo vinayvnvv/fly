@@ -360,17 +360,11 @@ export function placeUpstoxOrder(
     .then(res => {
       const { status } = res;
       if (status === 'success') {
-        if (transaction_type === 'BUY') {
+        if (transaction_type) {
           if (buyAudioRef) buyAudioRef.play();
           displayInfoNotification(
             notificationRef,
             `${getFormattedSymbolName(symbol)} order Sent`,
-          );
-        } else {
-          if (sellAudioRef) sellAudioRef.play();
-          displaySuccessNotification(
-            notificationRef,
-            `${getFormattedSymbolName(symbol)} Sell Complete`,
           );
         }
       } else {
@@ -462,3 +456,12 @@ export function splitArray(array, index) {
 export function findFirstOccurrenceDateIndex(array, targetDate) {
   return array.findIndex(item => item.date.isSameOrAfter(targetDate, 'minute'));
 }
+
+export const toggleAppBar = visible => {
+  const header = document.querySelector('header');
+  const main = document.querySelector('main');
+  if (header && main) {
+    header.style.display = !visible ? 'none' : 'flex';
+    main.firstChild.style.display = !visible ? 'none' : 'flex';
+  }
+};

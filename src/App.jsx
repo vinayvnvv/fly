@@ -60,6 +60,7 @@ function App() {
     <ThemeProvider theme={theme({ mode })}>
       <SnackbarProvider
         maxSnack={6}
+        preventDuplicate={true}
         hideIconVariant
         Components={{
           info: StyledMaterialDesignContent,

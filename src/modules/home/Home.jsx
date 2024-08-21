@@ -142,7 +142,7 @@ const TableItem = ({
   const openChart = type => {
     const d = options[type];
     window.open(
-      `https://tv.upstox.com/charts/${d.instrument_key}?isFromPW3=true`,
+      `${window.location.origin}/option-trade?instrument=${d.instrument_key}`,
       '_blank',
     );
   };

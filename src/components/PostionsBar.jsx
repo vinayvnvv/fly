@@ -58,6 +58,7 @@ const PostionsBar = ({
   profitTypoStyles,
   showPercAtInit,
   positionsData,
+  disableActivePosition,
   token,
 }) => {
   const theme = useTheme();
@@ -297,19 +298,21 @@ const PostionsBar = ({
                       />
                     </Stack>
                   )}
-                  <Stack direction={'row'} alignItems={'center'} ml={1.5}>
-                    <FormGroup>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            onChange={e => setShowActive(e.target.checked)}
-                            value={showActive}
-                          />
-                        }
-                        label="Active Positions"
-                      />
-                    </FormGroup>
-                  </Stack>
+                  {!disableActivePosition && (
+                    <Stack direction={'row'} alignItems={'center'} ml={1.5}>
+                      <FormGroup>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              onChange={e => setShowActive(e.target.checked)}
+                              value={showActive}
+                            />
+                          }
+                          label="Active Positions"
+                        />
+                      </FormGroup>
+                    </Stack>
+                  )}
                 </Stack>
 
                 <Stack

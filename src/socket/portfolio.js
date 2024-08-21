@@ -6,13 +6,15 @@ import { upstoxClient } from '../config/upstox';
 // MarketDataFeed component
 class PortFolio {
   ws;
-  constructor() {
+  type;
+  constructor(type) {
     initProtobuf();
+    this.type = type ? type : 'position';
   }
   async connectWebSocket(callback) {
     this.callback = callback;
     try {
-      const data = await upstoxClient.getPortfolioStreamForSocket('position');
+      const data = await upstoxClient.getPortfolioStreamForSocket(this.type);
       const wsUrl = data.data.authorized_redirect_uri;
       this.ws = new WebSocket(wsUrl);
 
@@ -58,3 +60,4 @@ class PortFolio {
 }
 
 export const PortFolioSocket = new PortFolio();
+export const OrdersSocket = new PortFolio('order');
