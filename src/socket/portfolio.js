@@ -7,6 +7,7 @@ import { upstoxClient } from '../config/upstox';
 class PortFolio {
   ws;
   type;
+  onCallbacks = new Set();
   constructor(type) {
     initProtobuf();
     this.type = type ? type : 'position';
@@ -36,6 +37,11 @@ class PortFolio {
         // let response = decodeProfobuf(buffer);
         console.log('onmessage', event);
         if (this.callback) this.callback(event.data);
+        if (this.onCallbacks.size > 0) {
+          for (const call of this.onCallbacks) {
+            if (call) call();
+          }
+        }
       };
 
       this.ws.onerror = error => {

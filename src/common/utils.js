@@ -316,6 +316,8 @@ export function placeUpstoxOrder(
   notificationRef,
   feeds,
   executeOnlyForMultiTrade,
+  orderData,
+  callback,
 ) {
   const buyAudioRef = document.getElementById('buy-audio');
   const sellAudioRef = document.getElementById('sell-audio');
@@ -340,19 +342,21 @@ export function placeUpstoxOrder(
     transaction_type === ORDER.BUY
       ? feed?.ltpc?.ltp + 10
       : feed?.ltpc?.ltp - 10;
-  const data = {
-    quantity,
-    product: 'D',
-    validity: 'DAY',
-    price: symbol.exchange === 'BSE' ? limitPrice : 0,
-    tag: 'string',
-    instrument_token: symbol.instrument_key,
-    order_type: symbol.exchange === 'BSE' ? 'LIMIT' : 'MARKET',
-    transaction_type,
-    disclosed_quantity: 0,
-    trigger_price: 0,
-    is_amo: false,
-  };
+  const data = orderData
+    ? orderData
+    : {
+        quantity,
+        product: 'D',
+        validity: 'DAY',
+        price: symbol.exchange === 'BSE' ? limitPrice : 0,
+        tag: 'string',
+        instrument_token: symbol.instrument_key,
+        order_type: symbol.exchange === 'BSE' ? 'LIMIT' : 'MARKET',
+        transaction_type,
+        disclosed_quantity: 0,
+        trigger_price: 0,
+        is_amo: false,
+      };
   placeMultiOrder(data);
   if (executeOnlyForMultiTrade) return;
   upstoxClient
@@ -360,6 +364,7 @@ export function placeUpstoxOrder(
     .then(res => {
       const { status } = res;
       if (status === 'success') {
+        if (callback) callback();
         if (transaction_type) {
           if (buyAudioRef) buyAudioRef.play();
           displayInfoNotification(
@@ -465,3 +470,7 @@ export const toggleAppBar = visible => {
     main.firstChild.style.display = !visible ? 'none' : 'flex';
   }
 };
+
+export function roundUpToNearestTenth(num) {
+  return Math.ceil(num * 10) / 10;
+}
