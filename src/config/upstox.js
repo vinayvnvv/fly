@@ -1,4 +1,5 @@
-import { formatCandles } from '../common/utils';
+import { formatCandles, isPaperTrading } from '../common/utils';
+import { BrokerApp } from '../main';
 import { axios, axiosCommon } from './../common/axios';
 
 const {
@@ -8,6 +9,8 @@ const {
 } = import.meta.env;
 
 console.log('VITE_SOME_KEY', import.meta.env);
+
+const paperTradingKey = 'paper_trading';
 
 export const upstoxHost = `https://api.upstox.com/v2`;
 class UpStox {
@@ -74,6 +77,19 @@ class UpStox {
     });
   }
   getFundMargin() {
+    if (isPaperTrading()) {
+      return new Promise(resolve => {
+        resolve({
+          status: 'success',
+          data: {
+            equity: {
+              used_margin: 0.0,
+              available_margin: 100000,
+            },
+          },
+        });
+      });
+    }
     return axios.get('/user/get-funds-and-margin');
   }
   brokerage(instrument_token, quantity, transaction_type, price) {
@@ -93,7 +109,13 @@ class UpStox {
       },
     });
   }
-  placeOrder(data) {
+  placeOrder(data, feed) {
+    if (isPaperTrading()) {
+      return new Promise(res => {
+        BrokerApp.order({ ...data, price: feed?.ltpc?.ltp });
+        res({ status: 'success' });
+      });
+    }
     return axios({
       url: '/order/place',
       data,
@@ -158,6 +180,14 @@ class UpStox {
     });
   }
   getPositions() {
+    if (isPaperTrading()) {
+      return new Promise(res => {
+        res({
+          status: 'success',
+          data: BrokerApp.getPositions(),
+        });
+      });
+    }
     return axios({
       method: 'get',
       maxBodyLength: Infinity,

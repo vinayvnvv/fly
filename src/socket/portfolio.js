@@ -2,6 +2,8 @@ import { Buffer } from 'buffer';
 import { instrumentKeys } from '../config';
 import { blobToArrayBuffer, decodeProfobuf, getUrl, initProtobuf } from './cmn';
 import { upstoxClient } from '../config/upstox';
+import { isPaperTrading } from '../common/utils';
+import { BrokerApp } from '../main';
 
 // MarketDataFeed component
 class PortFolio {
@@ -14,6 +16,17 @@ class PortFolio {
   }
   async connectWebSocket(callback) {
     this.callback = callback;
+    if (isPaperTrading()) {
+      BrokerApp.suscribeOrders(() => {
+        if (this.callback) this.callback(BrokerApp.getPositions());
+        if (this.onCallbacks.size > 0) {
+          for (const call of this.onCallbacks) {
+            if (call) call();
+          }
+        }
+      });
+      return;
+    }
     try {
       const data = await upstoxClient.getPortfolioStreamForSocket(this.type);
       const wsUrl = data.data.authorized_redirect_uri;

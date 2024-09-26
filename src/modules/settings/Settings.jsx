@@ -1,4 +1,13 @@
-import { Box, Divider, IconButton, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Divider,
+  FormControlLabel,
+  FormGroup,
+  IconButton,
+  Stack,
+  Switch,
+  Typography,
+} from '@mui/material';
 import { instrumentKeys } from '../../config';
 import { useAtom } from 'jotai';
 import { stores } from '../../store';
@@ -16,11 +25,15 @@ const quanitiesArray = [
 
 const Settings = () => {
   const [symbolQuantityInfo] = useAtom(stores.symbolQuantityInfo);
+  const [paperTrading, setPaperTrading] = useAtom(stores.paperTrading);
   const [quantitySizeInit, setQuantitySizeInit] = useAtom(
     stores.quantitySizeInit,
   );
   const onChangeQuantitySize = (instrumentKey, v) => {
     setQuantitySizeInit({ ...quantitySizeInit, [instrumentKey]: v });
+  };
+  const onPaperTradingChange = e => {
+    setPaperTrading(e.target.checked);
   };
   return (
     <Box>
@@ -64,6 +77,23 @@ const Settings = () => {
         </Stack>
       </Box>
       <Box mt={6}>
+        <Typography variant="subtitle1">Trading</Typography>
+        <Divider sx={{ my: 2 }} />
+        <FormGroup sx={{ display: 'inline-flex' }}>
+          <FormControlLabel
+            control={
+              <Switch
+                size="small"
+                checked={paperTrading || false}
+                onChange={onPaperTradingChange}
+              />
+            }
+            labelPlacement="start"
+            label="Paper Trading"
+          />
+        </FormGroup>
+      </Box>
+      <Box mt={6}>
         <Typography variant="subtitle1">Other Accounts</Typography>
         <Divider sx={{ my: 2 }} />
         {Accounts.map(account => (
@@ -73,4 +103,5 @@ const Settings = () => {
     </Box>
   );
 };
+
 export default Settings;

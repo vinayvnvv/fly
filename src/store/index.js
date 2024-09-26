@@ -66,6 +66,14 @@ export const basketLists = atomWithStorage(
 export const theme = atomWithStorage('theme', 'light', storageOptions, {
   getOnInit: true,
 });
+export const paperTrading = atomWithStorage(
+  'paper_trading',
+  false,
+  storageOptions,
+  {
+    getOnInit: true,
+  },
+);
 export const symbols = atomWithStorage('symbols', '', jsonStorageOptions, {
   getOnInit: true,
 });
@@ -154,4 +162,5 @@ export const stores = {
   accountsStatus,
   basketLists,
   mainAccountActive,
+  paperTrading,
 };

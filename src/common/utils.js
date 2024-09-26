@@ -1,6 +1,9 @@
 import { ORDER, indexOptionStrikeDiff, instrumentKeys } from '../config';
 import moment from 'moment';
 import { upstoxClient } from '../config/upstox';
+
+const paperTradingKey = 'paper_trading';
+
 export const getColorWithThemeMode = (theme, light, dark) => {
   return theme?.palette?.mode === 'light' ? light : dark;
 };
@@ -360,7 +363,7 @@ export function placeUpstoxOrder(
   placeMultiOrder(data);
   if (executeOnlyForMultiTrade) return;
   upstoxClient
-    .placeOrder(data)
+    .placeOrder(data, feed)
     .then(res => {
       const { status } = res;
       if (status === 'success') {
@@ -474,3 +477,11 @@ export const toggleAppBar = visible => {
 export function roundUpToNearestTenth(num) {
   return Math.ceil(num * 10) / 10;
 }
+
+export const isPaperTrading = () => {
+  const paperTrading = localStorage.getItem(paperTradingKey);
+  if (paperTrading === 'true') {
+    return true;
+  }
+  return false;
+};
