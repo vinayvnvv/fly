@@ -149,6 +149,14 @@ class UpStox {
     });
   }
   getOrderBook() {
+    if (isPaperTrading()) {
+      return new Promise(res => {
+        res({
+          status: 'success',
+          data: BrokerApp.getOrders(),
+        });
+      });
+    }
     return axios({
       method: 'get',
       maxBodyLength: Infinity,
@@ -159,6 +167,15 @@ class UpStox {
     });
   }
   getOrders() {
+    if (isPaperTrading()) {
+      return new Promise(res => {
+        res({
+          status: 'success',
+          data: BrokerApp.getOrders(),
+        });
+      });
+    }
+
     return axios({
       method: 'get',
       maxBodyLength: Infinity,

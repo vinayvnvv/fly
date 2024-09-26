@@ -41,15 +41,21 @@ class Broker {
       }
     }
     if (order) {
-      let _data = localStorage.getItem(this.storageKeyOrders);
+      let _data = localStorage.getItem(this.storageKeyOrders) || '[]';
       if (_data) {
         const _orders = JSON.parse(_data);
-        _orders.push(order);
+        _orders.push({
+          ...order,
+          filled_quantity: order.quantity,
+          order_type: 'MARKET',
+          average_price: order.at,
+          order_timestamp: moment().toISOString(),
+        });
         this.orders = _orders;
         localStorage.setItem(this.storageKeyOrders, JSON.stringify(_orders));
       }
     } else {
-      let _data = localStorage.getItem(this.storageKey);
+      let _data = localStorage.getItem(this.storageKeyOrders);
       if (_data) {
         this.orders = JSON.parse(_data);
       }
@@ -68,6 +74,10 @@ class Broker {
     });
   }
 
+  getOrders() {
+    return this.orders;
+  }
+
   onOrderUpdate(orderData) {
     this.syncStorage(this.positions, orderData);
     this.callSubscribers();
@@ -81,6 +91,9 @@ class Broker {
       ...position,
       quantity: _quantity,
       day_buy_value: _day_buy_value,
+      instrument_token: instrument_token,
+      at: price,
+      transaction_type: 'BUY',
     };
     this.positions[instrument_token] = positionData;
     this.onOrderUpdate(positionData);
@@ -94,6 +107,8 @@ class Broker {
       ...position,
       quantity: _quantity,
       day_sell_value: _day_sell_value,
+      instrument_token: instrument_token,
+      transaction_type: 'SELL',
     };
     this.positions[instrument_token] = positionData;
     this.onOrderUpdate(positionData);
