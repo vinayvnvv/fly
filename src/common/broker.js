@@ -96,7 +96,7 @@ class Broker {
       transaction_type: 'BUY',
     };
     this.positions[instrument_token] = positionData;
-    this.onOrderUpdate(positionData);
+    this.onOrderUpdate({ ...positionData, quantity });
   }
   sell(instrument_token, quantity, price) {
     let position = this.positions[instrument_token];
@@ -108,10 +108,11 @@ class Broker {
       quantity: _quantity,
       day_sell_value: _day_sell_value,
       instrument_token: instrument_token,
+      at: price,
       transaction_type: 'SELL',
     };
     this.positions[instrument_token] = positionData;
-    this.onOrderUpdate(positionData);
+    this.onOrderUpdate({ ...positionData, quantity });
   }
   order(data) {
     const { instrument_token, quantity, price, transaction_type } = data;

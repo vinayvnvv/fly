@@ -120,7 +120,7 @@ const AppBar = () => {
       >
         <Container>
           <AppHeaderToolBar disableGutters>
-            {/* <Typography
+            <Typography
               noWrap
               component="div"
               sx={{
@@ -140,9 +140,9 @@ const AppBar = () => {
               }}
             >
               fly
-            </Typography> */}
-            <img src="./upstox.svg" width={30} />
-            <Typography
+            </Typography>
+            {/* <img src="./upstox.svg" width={30} /> */}
+            {/* <Typography
               fontWeight={600}
               sx={{
                 fontSize: '16px',
@@ -151,7 +151,7 @@ const AppBar = () => {
               }}
             >
               Scalper
-            </Typography>
+            </Typography> */}
             <Divider orientation="vertical" sx={{ height: '23px', mx: 1.5 }} />
             <TimeClock />
             <Divider orientation="vertical" sx={{ height: '23px', mx: 1.5 }} />
