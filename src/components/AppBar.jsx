@@ -81,6 +81,7 @@ const navLinks = [
   { label: 'Orders', path: '/orders' },
   { label: 'Positions', path: '/positions' },
   { label: 'Pos X', path: '/trade-x' },
+  { label: 'P&L', path: '/pl' },
   { label: 'Settings', path: '/settings' },
 ];
 const AppBar = () => {

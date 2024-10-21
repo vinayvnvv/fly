@@ -17,6 +17,7 @@
     "@mui/material": "^5.15.14",
     "axios": "^1.6.8",
     "buffer": "^6.0.3",
+    "cal-heatmap": "^4.2.4",
     "dayjs": "^1.11.10",
     "fyers-web-sdk-v3": "^1.1.0",
     "jotai": "^2.7.2",

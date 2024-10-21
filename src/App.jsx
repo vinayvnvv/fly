@@ -7,6 +7,7 @@ import {
   ThemeProvider,
   styled,
 } from '@mui/material';
+import './App.css';
 import CssBaseline from '@mui/material/CssBaseline';
 import Papa from 'papaparse';
 import { MaterialDesignContent, SnackbarProvider } from 'notistack';

@@ -12,6 +12,7 @@ import Accounts from './modules/accounts';
 import TradeX from './modules/trade-x/TradeX';
 import ChartComponent from './modules/chart/Chart';
 import OptionTrade from './modules/option-trade/OptionTrade';
+import PL from './modules/pl/PL';
 
 const AuthRouter = ({ children }) => {
   const [authToken] = useAtom(token);
@@ -75,6 +76,14 @@ export const router = AppLayout =>
           element: (
             <AuthRouter>
               <Basket />
+            </AuthRouter>
+          ),
+        },
+        {
+          path: '/pl',
+          element: (
+            <AuthRouter>
+              <PL />
             </AuthRouter>
           ),
         },
