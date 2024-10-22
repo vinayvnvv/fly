@@ -80,7 +80,7 @@ export const router = AppLayout =>
           ),
         },
         {
-          path: '/pl',
+          path: '/reports',
           element: (
             <AuthRouter>
               <PL />

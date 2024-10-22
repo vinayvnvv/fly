@@ -71,6 +71,7 @@ function PL() {
         theme: theme,
         domain: {
           type: 'month',
+          gutter: 3,
         },
         scale: {
           color: {
@@ -108,6 +109,9 @@ function PL() {
   };
   useEffect(() => {
     heatMap.current = new CalHeatmap();
+    heatMap.current.on('click', (event, timestamp, value) => {
+      console.log(event, timestamp, value);
+    });
     paint();
   }, []);
   useEffect(() => {
