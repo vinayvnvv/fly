@@ -11,6 +11,9 @@ import {
   getRedTextColor,
 } from '../../common/utils';
 
+const rangeOnlyPositive = ['#a5d6a7', '#1b5e20'];
+const rangeWithNegative = ['#6e0300', '#ffdfde', '#a5d6a7', '#1b5e20'];
+
 const formatData = (positions, date) => {
   let total = 0;
   const positionsInstruments = Object.keys(positions);
@@ -75,10 +78,10 @@ function PL() {
         },
         scale: {
           color: {
-            range: ['#a5d6a7', '#1b5e20'],
+            range: min < 0 ? rangeWithNegative : rangeOnlyPositive,
             interpolate: 'hsl',
             type: 'linear',
-            domain: [min, max],
+            domain: min < 0 ? [min, 0, 0, max] : [min, max],
           },
         },
         range: 12,
