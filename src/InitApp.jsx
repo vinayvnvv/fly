@@ -46,7 +46,7 @@ const InitApp = ({ onInit }) => {
           filterSymbols(res);
         setFilteredSymbols(data);
         setSymbolQuantityInfo(symbolQuantityInfo);
-        setQuantitySizeInit(quantitySizeInit);
+        // setQuantitySizeInit(quantitySizeInit);
         setSymbolsObjects(filterSymbolsObject(res));
         setTimeout(() => {
           onInit();
