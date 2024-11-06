@@ -10,6 +10,7 @@ import {
   getGreenTextColor,
   getRedTextColor,
 } from '../../common/utils';
+import dayjs from 'dayjs';
 
 const rangeOnlyPositive = ['#a5d6a7', '#1b5e20'];
 const rangeWithNegative = ['#6e0300', '#ffdfde', '#a5d6a7', '#1b5e20'];
@@ -35,6 +36,7 @@ const getData = () => {
     total: 0,
     min: -1,
     max: -1,
+    startDate: new Date(),
   };
   for (var i = 0, len = localStorage.length; i < len; i++) {
     var key = localStorage.key(i);
@@ -54,6 +56,9 @@ const getData = () => {
       if (_data.total > data.max) {
         data.max = _data.total;
       }
+      if (dayjs(date).isBefore(dayjs(data.startDate))) {
+        data.startDate = date;
+      }
       data.total = data.total + _data.total;
     }
   }
@@ -66,11 +71,12 @@ function PL() {
   const [theme] = useAtom(stores.theme);
   const [pl, setPL] = useState({ total: 0 });
   const paint = () => {
-    const { day, total, max, min } = getData();
-    console.log(min, max);
+    const { day, total, max, min, startDate } = getData();
+    console.log(min, max, day, startDate);
     setPL({ ...pl, total });
     heatMap.current.paint(
       {
+        date: { start: new Date(startDate) },
         theme: theme,
         domain: {
           type: 'month',
@@ -85,7 +91,6 @@ function PL() {
           },
         },
         range: 12,
-        date: { start: new Date(day[0].date) },
         subDomain: { type: 'day', radius: 2, height: 18, width: 18, gutter: 3 },
         itemSelector: ref?.current,
         data: {
