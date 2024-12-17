@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import {
   Button,
   Checkbox,
@@ -128,7 +129,7 @@ export default function BuyAtStrike({ ltpStrikePrices }) {
               control={
                 <Checkbox
                   onChange={e => onSelectedIndexChange(e, q.instrumentKey)}
-                  checked={selectedIndex[q.instrumentKey]}
+                  checked={selectedIndex?.[q.instrumentKey]}
                 />
               }
               label={q.name}
@@ -147,3 +148,7 @@ export default function BuyAtStrike({ ltpStrikePrices }) {
     </Paper>
   );
 }
+
+BuyAtStrike.propTypes = {
+  ltpStrikePrices: PropTypes.object.isRequired,
+};
