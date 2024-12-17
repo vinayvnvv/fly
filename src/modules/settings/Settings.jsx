@@ -16,7 +16,7 @@ import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 import { Accounts } from '../../config/accounts';
 import OtherAccounts from './OtherAccounts';
 
-const quanitiesArray = [
+export const quanitiesArray = [
   { name: 'Nifty', instrumentKey: instrumentKeys.NIFTY },
   { name: 'Bank Nifty', instrumentKey: instrumentKeys.BANKNIFTY },
   { name: 'Fin Nifty', instrumentKey: instrumentKeys.FINNIFTY },
@@ -84,7 +84,11 @@ const Settings = () => {
             control={
               <Switch
                 size="small"
-                checked={paperTrading || false}
+                checked={
+                  paperTrading === 'true' || paperTrading === true
+                    ? true
+                    : false
+                }
                 onChange={onPaperTradingChange}
               />
             }

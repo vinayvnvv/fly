@@ -70,7 +70,7 @@ function App() {
         }}
       >
         <CssBaseline />
-        {authToken && (
+        {authToken && !appInit && (
           <>
             <InitApp onInit={() => setInit(true)} />
             <SocketUpdate onInit={() => setSocketInit(true)} />

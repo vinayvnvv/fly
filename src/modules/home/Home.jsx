@@ -31,6 +31,7 @@ import CandlestickChartRoundedIcon from '@mui/icons-material/CandlestickChartRou
 import { useSnackbar } from 'notistack';
 import PostionsBar from '../../components/PostionsBar';
 import QuantityInput from '../../components/QuantityInput';
+import { BuyAtStrike } from '../../components';
 
 const TableItemRoot = styled(Stack)(({ theme, active, selected }) => ({
   // borderTop: `1px solid ${theme.palette.divider}`,
@@ -370,6 +371,7 @@ const Home = () => {
   useEffect(() => {
     MarketDataFeedSocket.on(res => {
       const changedStrike = getStrikePriceForOptionChain(ltpStrikePrices, res);
+
       if (typeof changedStrike === 'object') {
         const keys = Object.keys(changedStrike);
         if (keys.length > 0) {
@@ -390,6 +392,7 @@ const Home = () => {
     });
     setQuantitySize(quantitySizeInit);
   }, []);
+  console.log('changedStrike', ltpStrikePrices);
   return (
     <>
       <Stack direction={'row'} spacing={4}>
@@ -400,8 +403,12 @@ const Home = () => {
           data={filteredSymbols?.nifty}
           closeDiff={3}
         />
+
         <Box sx={{ width: `69.666667%` }}>
-          <PostionsBar />
+          <Stack spacing={2}>
+            <BuyAtStrike ltpStrikePrices={ltpStrikePrices} />
+            <PostionsBar />
+          </Stack>
         </Box>
       </Stack>
 

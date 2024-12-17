@@ -10,7 +10,7 @@ const {
 
 console.log('VITE_SOME_KEY', import.meta.env);
 
-const paperTradingKey = 'paper_trading';
+// const paperTradingKey = 'paper_trading';
 
 export const upstoxHost = `https://api.upstox.com/v2`;
 class UpStox {
@@ -63,7 +63,7 @@ class UpStox {
           callback(false);
         }
       })
-      .catch(err => {
+      .catch(() => {
         callback(false);
       });
   }
@@ -273,6 +273,38 @@ class UpStox {
       method: 'get',
       maxBodyLength: Infinity,
       url: `/feed/portfolio-stream-feed/authorize?update_types=${updateType || 'position  '}`,
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+  }
+
+  getReportMetadata(from_date, to_date, financial_year) {
+    return axios({
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `/trade/profit-loss/metadata?from_date=${from_date}&to_date=${to_date}&segment=FO&financial_year=${financial_year}`,
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+  }
+  getReportPLData(from_date, to_date, financial_year, page_number) {
+    return axios({
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `/trade/profit-loss/data?from_date=${from_date}&to_date=${to_date}&segment=FO&financial_year=${financial_year}&page_number=${page_number}&page_size=5000`,
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+  }
+
+  getCharges(from_date, to_date, financial_year) {
+    return axios({
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: `/trade/profit-loss/charges?from_date=${from_date}&to_date=${to_date}&segment=FO&financial_year=${financial_year}`,
       headers: {
         Accept: 'application/json',
       },

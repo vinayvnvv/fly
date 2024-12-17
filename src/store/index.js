@@ -85,6 +85,14 @@ export const quantitySizeInit = atomWithStorage(
     getOnInit: true,
   },
 );
+export const selectedBuyAtStrike = atomWithStorage(
+  'selected_buy_at_strike',
+  '',
+  jsonStorageOptions,
+  {
+    getOnInit: true,
+  },
+);
 export const symbolQuantityInfo = atomWithStorage(
   'symbol_quantity_info',
   '',
@@ -163,4 +171,5 @@ export const stores = {
   basketLists,
   mainAccountActive,
   paperTrading,
+  selectedBuyAtStrike,
 };

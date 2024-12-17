@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import CalHeatmap from 'cal-heatmap';
 import Tooltip from 'cal-heatmap/plugins/Tooltip';
 import 'cal-heatmap/cal-heatmap.css';
@@ -11,6 +11,7 @@ import {
   getRedTextColor,
 } from '../../common/utils';
 import dayjs from 'dayjs';
+import { getFinalPLData } from '../../common/pl';
 
 const rangeOnlyPositive = ['#a5d6a7', '#1b5e20'];
 const rangeWithNegative = ['#6e0300', '#ffdfde', '#a5d6a7', '#1b5e20'];
@@ -69,10 +70,16 @@ function PL() {
   const ref = useRef();
   const heatMap = useRef();
   const [theme] = useAtom(stores.theme);
+  const [isPaperTrading] = useAtom(stores.paperTrading);
   const [pl, setPL] = useState({ total: 0 });
+  const [reportData, setReportData] = useState(null);
+  const paperTrading = isPaperTrading === 'true' ? true : false;
+  console.log('paperTrading', paperTrading);
   const paint = () => {
-    const { day, total, max, min, startDate } = getData();
-    console.log(min, max, day, startDate);
+    const { day, total, max, min, startDate, charges } = paperTrading
+      ? getData()
+      : reportData;
+    console.log('getData', day, total, max, min, startDate, charges);
     setPL({ ...pl, total });
     heatMap.current.paint(
       {
@@ -120,14 +127,22 @@ function PL() {
     heatMap.current.on('click', (event, timestamp, value) => {
       console.log(event, timestamp, value);
     });
-    paint();
+    const getReport = async () => {
+      const data = await getFinalPLData('01-11-2024', '16-12-2024', '2425');
+      setReportData(data);
+    };
+    if (paperTrading) {
+      paint();
+    } else {
+      getReport();
+    }
   }, []);
   useEffect(() => {
-    paint();
-  }, [theme]);
+    if (reportData) paint();
+  }, [theme, reportData]);
   return (
     <Box mt={3}>
-      <Stack direction={'row'} mb={3}>
+      <Stack direction={'row'} mb={3} spacing={2}>
         <Card variant="outlined" sx={{ p: 2 }}>
           <Typography variant="subtitle1">Net Profit</Typography>
           <Typography
@@ -144,6 +159,39 @@ function PL() {
             {formaToINR(pl?.total)}
           </Typography>
         </Card>
+        {reportData?.charges && (
+          <Card variant="outlined" sx={{ p: 2 }}>
+            <Typography variant="subtitle1">Charges</Typography>
+            <Typography
+              variant="h5"
+              fontWeight={600}
+              sx={{
+                color: theme => getRedTextColor(theme),
+              }}
+              mt={0.3}
+            >
+              {formaToINR(-reportData?.charges)}
+            </Typography>
+          </Card>
+        )}
+        {reportData?.charges && (
+          <Card variant="outlined" sx={{ p: 2 }}>
+            <Typography variant="subtitle1">Realised Profit</Typography>
+            <Typography
+              variant="h5"
+              fontWeight={600}
+              sx={{
+                color: theme =>
+                  pl?.total > 0
+                    ? getGreenTextColor(theme)
+                    : getRedTextColor(theme),
+              }}
+              mt={0.3}
+            >
+              {formaToINR(pl?.total + reportData?.charges)}
+            </Typography>
+          </Card>
+        )}
       </Stack>
       <div ref={ref}></div>
     </Box>
