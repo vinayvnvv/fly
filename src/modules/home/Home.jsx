@@ -386,7 +386,13 @@ const Home = () => {
               newVal[k] = changedStrike[k];
             }
           });
-          setLtpStrikePrices(newVal);
+          const newStrikePrices = Object.fromEntries(
+            Object.entries(newVal).filter(([_, value]) => value > 0),
+          );
+          setLtpStrikePrices(prevState => ({
+            ...prevState,
+            ...newStrikePrices,
+          }));
         }
       }
     });
