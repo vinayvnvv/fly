@@ -12,6 +12,7 @@ import {
 } from '../../common/utils';
 import dayjs from 'dayjs';
 import { getFinalPLData } from '../../common/pl';
+import moment from 'moment';
 
 const rangeOnlyPositive = ['#a5d6a7', '#1b5e20'];
 const rangeWithNegative = ['#6e0300', '#ffdfde', '#a5d6a7', '#1b5e20'];
@@ -128,7 +129,11 @@ function PL() {
       console.log(event, timestamp, value);
     });
     const getReport = async () => {
-      const data = await getFinalPLData('01-11-2024', '16-12-2024', '2425');
+      const data = await getFinalPLData(
+        '01-11-2024',
+        moment().format('DD-MM-YYYY'),
+        '2425',
+      );
       setReportData(data);
     };
     if (paperTrading) {
