@@ -36,6 +36,7 @@ import TableHead, { tableHeadClasses } from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { useSnackbar } from 'notistack';
 import ConfirmButton from './ConfirmButton';
+import { Controller } from '../common/controller';
 
 export const StyledTable = styled(Table)(({ theme }) => ({
   [`& .${tableHeadClasses.root}`]: {
@@ -77,6 +78,10 @@ const PostionsBar = ({
   const margin = fundsMargins?.available_margin
     ? fundsMargins?.available_margin + fundsMargins?.used_margin
     : 0;
+  useEffect(() => {
+    const pos = positionsData || positions;
+    Controller.setPositions(pos);
+  }, [positionsData, positions]);
   const calcProfit = () => {
     if (!profit.current) profit.current = {};
     const { data } = positions || {};

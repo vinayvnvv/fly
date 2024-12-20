@@ -7,6 +7,7 @@ import {
   formatFundsMarginData,
 } from './common/utils';
 import { memo, useEffect } from 'react';
+import { Controller } from './common/controller';
 
 const InitApp = ({ onInit }) => {
   const [authToken] = useAtom(token);
@@ -36,6 +37,9 @@ const InitApp = ({ onInit }) => {
     }
     upstoxClient.getFundMargin().then(res => {
       setFundsMargin(formatFundsMarginData(res?.data));
+    });
+    upstoxClient.getOrderBook().then(res => {
+      Controller.setOrders(res);
     });
     getPositions();
     if (!symbols) {

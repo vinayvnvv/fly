@@ -1,6 +1,7 @@
 import { ORDER, indexOptionStrikeDiff, instrumentKeys } from '../config';
 import moment from 'moment';
 import { upstoxClient } from '../config/upstox';
+import { Controller } from './controller';
 
 const paperTradingKey = 'paper_trading';
 
@@ -322,6 +323,12 @@ export function placeUpstoxOrder(
   orderData,
   callback,
 ) {
+  const { status: canTrade, reason } = Controller.canAddPositions(quantity);
+  if (transaction_type === ORDER.BUY && !canTrade) {
+    displayErrorNotification(notificationRef, reason);
+    return;
+  }
+
   const buyAudioRef = document.getElementById('buy-audio');
   const sellAudioRef = document.getElementById('sell-audio');
   const feed = feeds[symbol?.instrument_key];
@@ -367,6 +374,9 @@ export function placeUpstoxOrder(
     .then(res => {
       const { status } = res;
       if (status === 'success') {
+        upstoxClient.getOrderBook().then(res => {
+          Controller.setOrders(res);
+        });
         if (callback) callback();
         if (transaction_type) {
           if (buyAudioRef) buyAudioRef.play();

@@ -65,7 +65,7 @@ export default function BuyAtStrike({ ltpStrikePrices }) {
         placeUpstoxOrder(
           niftyOption[0],
           quantitySizeInit[instrumentKeys.NIFTY],
-          instrument_type === 'CE' ? ORDER.BUY : ORDER.SELL,
+          ORDER.BUY,
           enqueueSnackbar,
           feeds,
         );
@@ -74,7 +74,7 @@ export default function BuyAtStrike({ ltpStrikePrices }) {
         placeUpstoxOrder(
           bankNiftyOption[0],
           quantitySizeInit[instrumentKeys.BANKNIFTY],
-          instrument_type === 'CE' ? ORDER.BUY : ORDER.SELL,
+          ORDER.BUY,
           enqueueSnackbar,
           feeds,
         );
@@ -83,7 +83,7 @@ export default function BuyAtStrike({ ltpStrikePrices }) {
         placeUpstoxOrder(
           finNiftyOption[0],
           quantitySizeInit[instrumentKeys.FINNIFTY],
-          instrument_type === 'CE' ? ORDER.BUY : ORDER.SELL,
+          ORDER.BUY,
           enqueueSnackbar,
           feeds,
         );
@@ -92,7 +92,7 @@ export default function BuyAtStrike({ ltpStrikePrices }) {
         placeUpstoxOrder(
           sensexOption[0],
           quantitySizeInit[instrumentKeys.SENSEX],
-          instrument_type === 'CE' ? ORDER.BUY : ORDER.SELL,
+          ORDER.BUY,
           enqueueSnackbar,
           feeds,
         );
