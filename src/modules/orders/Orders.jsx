@@ -1,6 +1,7 @@
 import {
   Box,
   Chip,
+  CircularProgress,
   Divider,
   MenuItem,
   Paper,
@@ -10,6 +11,7 @@ import {
   alpha,
   lighten,
   styled,
+  useTheme,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { upstoxClient } from '../../config/upstox';
@@ -48,13 +50,17 @@ const Orders = () => {
   const [orders, setOrders] = useState();
   const [tokens] = useAtom(stores.tokens);
   const [symbols] = useAtom(symbolsObjects);
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState('me');
+  const theme = useTheme();
   //   const [symbols] = useAtom(stores.symbols);
 
-  const getOrders = () => {
-    upstoxClient.getOrderBook().then(response => {
+  const getOrders = async () => {
+    setLoading(true);
+    await upstoxClient.getOrderBook().then(response => {
       setOrders(response?.data?.reverse());
     });
+    setLoading(false);
   };
   const getMultiOrders = token => {
     upstoxClient.getMultiOrderBook(token).then(response => {
@@ -72,6 +78,34 @@ const Orders = () => {
     } else {
       getMultiOrders(token);
     }
+  };
+  const totalOrders = orders?.filter(itm => itm.status === 'complete')?.length;
+  const totalBuyOrders = orders?.filter(
+    itm => itm.status === 'complete' && itm.transaction_type === 'BUY',
+  )?.length;
+  const totalSellOrders = orders?.filter(
+    itm => itm.status === 'complete' && itm.transaction_type === 'SELL',
+  )?.length;
+  const StatsItem = ({ title, count, color }) => {
+    return (
+      <Box
+        sx={{
+          width: 100,
+          height: 80,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: '10px',
+          border: `2px solid ${color}`,
+        }}
+      >
+        <Typography variant="h5" fontWeight={'700'} sx={{ color }}>
+          {count}
+        </Typography>
+        <Typography variant="caption">{title}</Typography>
+      </Box>
+    );
   };
   const Title = () => {
     return (
@@ -98,6 +132,16 @@ const Orders = () => {
       </Stack>
     );
   };
+  if (loading)
+    return (
+      <Stack
+        alignItems={'center'}
+        justifyContent={'center'}
+        sx={{ minHeight: 300 }}
+      >
+        <CircularProgress />
+      </Stack>
+    );
   if (orders && orders.length === 0) {
     return (
       <Box mt={1}>
@@ -126,6 +170,25 @@ const Orders = () => {
   return (
     <Box mt={1}>
       <Title />
+      <Box sx={{ my: 3 }}>
+        <Stack direction={'row'} spacing={3}>
+          <StatsItem
+            title="Total Orders"
+            count={totalOrders}
+            color={theme.palette.info.main}
+          />
+          <StatsItem
+            title="Buy Orders"
+            count={totalBuyOrders}
+            color={theme.palette.success.main}
+          />
+          <StatsItem
+            title="Sell Orders"
+            count={totalSellOrders}
+            color={theme.palette.error.main}
+          />
+        </Stack>
+      </Box>
       <TableContainer component={'div'} variant="outlined">
         <StyledTable
           size="small"

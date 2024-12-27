@@ -398,7 +398,6 @@ const Home = () => {
     });
     setQuantitySize(quantitySizeInit);
   }, []);
-  console.log('changedStrike', ltpStrikePrices);
   return (
     <>
       <Stack direction={'row'} spacing={4}>

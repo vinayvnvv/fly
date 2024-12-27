@@ -14,6 +14,7 @@ import { stores } from '../store';
 import { instrumentKeys, ORDER } from '../config';
 import { placeUpstoxOrder } from '../common/utils';
 import { useSnackbar } from 'notistack';
+import moment from 'moment';
 
 export default function BuyAtStrike({ ltpStrikePrices }) {
   const [symbols] = useAtom(stores.filteredSymbols);
@@ -41,56 +42,86 @@ export default function BuyAtStrike({ ltpStrikePrices }) {
         return;
       }
       console.log('buy', ltpStrikePrices, symbols);
-      const niftyOption = symbols?.nifty?.filter(
-        symb =>
-          symb.strike_price === ltpStrikePrices[instrumentKeys.NIFTY] &&
-          instrument_type === symb.instrument_type,
-      ); // Example expression to complete the function
-      const bankNiftyOption = symbols?.bankNifty?.filter(
-        symb =>
-          symb.strike_price === ltpStrikePrices[instrumentKeys.BANKNIFTY] &&
-          instrument_type === symb.instrument_type,
-      ); // Example expression to complete the function
-      const finNiftyOption = symbols?.finNifty?.filter(
-        symb =>
-          symb.strike_price === ltpStrikePrices[instrumentKeys.FINNIFTY] &&
-          instrument_type === symb.instrument_type,
-      ); // Example expression to complete the function
-      const sensexOption = symbols?.sensex?.filter(
-        symb =>
-          symb.strike_price === ltpStrikePrices[instrumentKeys.SENSEX] &&
-          instrument_type === symb.instrument_type,
-      ); // Example expression to complete the function
-      if (niftyOption?.[0] && selectedIndex[instrumentKeys.NIFTY]) {
+      const niftyOption = symbols?.nifty
+        ?.filter(
+          symb =>
+            symb.strike_price === ltpStrikePrices[instrumentKeys.NIFTY] &&
+            instrument_type === symb.instrument_type,
+        )
+        .reduce((latest, current) => {
+          return !latest ||
+            moment(current.expiry).isBefore(moment(latest.expiry))
+            ? current
+            : latest;
+        }, null);
+      const bankNiftyOption = symbols?.bankNifty
+        ?.filter(
+          symb =>
+            symb.strike_price === ltpStrikePrices[instrumentKeys.BANKNIFTY] &&
+            instrument_type === symb.instrument_type,
+        )
+        .reduce((latest, current) => {
+          return !latest ||
+            moment(current.expiry).isBefore(moment(latest.expiry))
+            ? current
+            : latest;
+        }, null); // Example expression to complete the function
+      const finNiftyOption = symbols?.finNifty
+        ?.filter(
+          symb =>
+            symb.strike_price === ltpStrikePrices[instrumentKeys.FINNIFTY] &&
+            instrument_type === symb.instrument_type,
+        )
+        .reduce((latest, current) => {
+          return !latest ||
+            moment(current.expiry).isBefore(moment(latest.expiry))
+            ? current
+            : latest;
+        }, null); // Example expression to complete the function
+      const sensexOption = symbols?.sensex
+        ?.filter(
+          symb =>
+            symb.strike_price === ltpStrikePrices[instrumentKeys.SENSEX] &&
+            instrument_type === symb.instrument_type,
+        )
+        .reduce((latest, current) => {
+          return !latest ||
+            moment(current.expiry).isBefore(moment(latest.expiry))
+            ? current
+            : latest;
+        }, null); // Example expression to complete the function
+
+      console.log('cccc', sensexOption, symbols?.sensex);
+      if (niftyOption && selectedIndex[instrumentKeys.NIFTY]) {
         placeUpstoxOrder(
-          niftyOption[0],
+          niftyOption,
           quantitySizeInit[instrumentKeys.NIFTY],
           ORDER.BUY,
           enqueueSnackbar,
           feeds,
         );
       }
-      if (bankNiftyOption?.[0] && selectedIndex[instrumentKeys.BANKNIFTY]) {
+      if (bankNiftyOption && selectedIndex[instrumentKeys.BANKNIFTY]) {
         placeUpstoxOrder(
-          bankNiftyOption[0],
+          bankNiftyOption,
           quantitySizeInit[instrumentKeys.BANKNIFTY],
           ORDER.BUY,
           enqueueSnackbar,
           feeds,
         );
       }
-      if (finNiftyOption?.[0] && selectedIndex[instrumentKeys.FINNIFTY]) {
+      if (finNiftyOption && selectedIndex[instrumentKeys.FINNIFTY]) {
         placeUpstoxOrder(
-          finNiftyOption[0],
+          finNiftyOption,
           quantitySizeInit[instrumentKeys.FINNIFTY],
           ORDER.BUY,
           enqueueSnackbar,
           feeds,
         );
       }
-      if (sensexOption?.[0] && selectedIndex[instrumentKeys.SENSEX]) {
+      if (sensexOption && selectedIndex[instrumentKeys.SENSEX]) {
         placeUpstoxOrder(
-          sensexOption[0],
+          sensexOption,
           quantitySizeInit[instrumentKeys.SENSEX],
           ORDER.BUY,
           enqueueSnackbar,
