@@ -1,4 +1,4 @@
-import { Box, Container } from '@mui/material';
+import { Box, Container, useMediaQuery, useTheme } from '@mui/material';
 import { AppBar } from './components';
 import { RouterProvider, Outlet } from 'react-router-dom';
 import { router } from './routes.jsx';
@@ -13,10 +13,12 @@ const sellMp3 = new URL('./assets/sell.mp3', import.meta.url).href;
 
 const AppLayout = () => {
   const [appToken] = useAtom(token);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <Box sx={{ display: 'flex' }}>
       {appToken && <AppBar />}
-      <Container component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Container component="main" sx={{ flexGrow: 1, p: isMobile ? 1.4 : 3 }}>
         <AppHeaderToolBar />
         {/* {appToken && <PostionsBar />} */}
         <Outlet />

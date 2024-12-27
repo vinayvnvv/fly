@@ -140,7 +140,7 @@ export default function BuyAtStrike({ ltpStrikePrices, isMobile }) {
   return (
     <Paper variant="outlined" sx={{ p: 2 }}>
       <Stack
-        spacing={3}
+        spacing={isMobile ? 1 : 3}
         direction={isMobile ? 'column' : 'row'}
         alignItems={'center'}
         justifyContent={'space-between'}
@@ -166,7 +166,17 @@ export default function BuyAtStrike({ ltpStrikePrices, isMobile }) {
                   checked={selectedIndex?.[q.instrumentKey]}
                 />
               }
-              label={q.name}
+              label={
+                <Typography
+                  variant={isMobile ? 'caption' : 'body1'}
+                  sx={{
+                    maxWidth: isMobile ? 70 : 'auto',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {q.name}
+                </Typography>
+              }
             />
           ))}
         </Stack>
