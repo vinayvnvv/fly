@@ -12,6 +12,10 @@ import {
   Divider,
   tabClasses,
   Stack,
+  useTheme,
+  useMediaQuery,
+  Drawer,
+  IconButton,
 } from '@mui/material';
 import ThemeSwitch from './ThemeSwitch';
 import { useEffect, useState } from 'react';
@@ -24,6 +28,7 @@ import { useAtom } from 'jotai';
 import { stores } from '../store';
 import PostionsBar from './PostionsBar';
 import MainAccountStatus from './MainAccountStatus';
+import MenuIcon from '@mui/icons-material/Menu';
 
 export const appBarHeight = {
   mobile: 40,
@@ -88,6 +93,9 @@ const AppBar = () => {
   const [value, setValue] = useState(0);
   const [fundsMargins] = useAtom(stores.fundAndMargin);
   const [mainAccountStatus] = useAtom(stores.mainAccountActive);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const location = useLocation();
 
@@ -104,6 +112,17 @@ const AppBar = () => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const toggleDrawer = open => event => {
+    if (
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
+      return;
+    }
+    setDrawerOpen(open);
+  };
+
   return (
     <>
       {mainAccountStatus && <MainAccountStatus />}
@@ -155,35 +174,43 @@ const AppBar = () => {
             </Typography> */}
             <Divider orientation="vertical" sx={{ height: '23px', mx: 1.5 }} />
             <TimeClock />
-            <Divider orientation="vertical" sx={{ height: '23px', mx: 1.5 }} />
-            <Stack ml={1} sx={{ minWidth: '195px' }}>
-              <Stack direction={'row'} alignItems={'center'}>
-                <Typography fontSize={11} fontWeight={600} mr={0.5}>
-                  NIFTY
-                </Typography>
-                <SocketTypo
-                  fontSize={11}
-                  isBold
-                  fontWeight={600}
-                  showWithPerc
-                  showChangeDiff
-                  instrumentKey={instrumentKeys.NIFTY}
+
+            {!isMobile && (
+              <>
+                <Divider
+                  orientation="vertical"
+                  sx={{ height: '23px', mx: 1.5 }}
                 />
-              </Stack>
-              <Stack direction={'row'} alignItems={'center'}>
-                <Typography fontSize={11} fontWeight={600} mr={0.5}>
-                  BANKNIFTY
-                </Typography>
-                <SocketTypo
-                  fontSize={11}
-                  isBold
-                  showWithPerc
-                  showChangeDiff
-                  fontWeight={600}
-                  instrumentKey={instrumentKeys.BANKNIFTY}
-                />
-              </Stack>
-            </Stack>
+                <Stack ml={1} sx={{ minWidth: '195px' }}>
+                  <Stack direction={'row'} alignItems={'center'}>
+                    <Typography fontSize={11} fontWeight={600} mr={0.5}>
+                      NIFTY
+                    </Typography>
+                    <SocketTypo
+                      fontSize={11}
+                      isBold
+                      fontWeight={600}
+                      showWithPerc
+                      showChangeDiff
+                      instrumentKey={instrumentKeys.NIFTY}
+                    />
+                  </Stack>
+                  <Stack direction={'row'} alignItems={'center'}>
+                    <Typography fontSize={11} fontWeight={600} mr={0.5}>
+                      BANKNIFTY
+                    </Typography>
+                    <SocketTypo
+                      fontSize={11}
+                      isBold
+                      showWithPerc
+                      showChangeDiff
+                      fontWeight={600}
+                      instrumentKey={instrumentKeys.BANKNIFTY}
+                    />
+                  </Stack>
+                </Stack>
+              </>
+            )}
             <Divider orientation="vertical" sx={{ height: '23px', mx: 1.5 }} />
             <Stack direction={'column'} alignItems={'center'}>
               <Typography
@@ -214,25 +241,56 @@ const AppBar = () => {
               />
             </Stack>
             <Box flexGrow={1} />
-            <StyledTabs
-              // sx={{ mr: 3 }}
-              value={value}
-              onChange={handleChange}
-              aria-label="basic tabs example"
-            >
-              {navLinks.map(nav => (
-                <StyledTab
-                  key={nav.path}
-                  label={nav.label}
-                  component={NavLink}
-                  to={nav.path}
-                />
-              ))}
-            </StyledTabs>
+            {isMobile && (
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={toggleDrawer(true)}
+                aria-label="menu"
+              >
+                <MenuIcon />
+              </IconButton>
+            )}
+            {!isMobile && (
+              <StyledTabs
+                // sx={{ mr: 3 }}
+                value={value}
+                onChange={handleChange}
+                aria-label="basic tabs example"
+              >
+                {navLinks.map(nav => (
+                  <StyledTab
+                    key={nav.path}
+                    label={nav.label}
+                    component={NavLink}
+                    to={nav.path}
+                  />
+                ))}
+              </StyledTabs>
+            )}
+
             {/* <ThemeSwitch /> */}
           </AppHeaderToolBar>
         </Container>
       </MUIAppBar>
+
+      <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer(false)}>
+        <Box
+          sx={{ width: 250, mt: 7 }}
+          role="presentation"
+          onClick={toggleDrawer(false)}
+          onKeyDown={toggleDrawer(false)}
+        >
+          {navLinks.map(nav => (
+            <StyledTab
+              key={nav.path}
+              label={nav.label}
+              component={NavLink}
+              to={nav.path}
+            />
+          ))}
+        </Box>
+      </Drawer>
     </>
   );
 };

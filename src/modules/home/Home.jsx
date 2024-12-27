@@ -12,6 +12,8 @@ import {
   darken,
   lighten,
   styled,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import {
   getColorWithThemeMode,
@@ -121,6 +123,9 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   borderRadius: '5px',
   flexGrow: 1,
   width: `${100 / 3}%`,
+  [theme.breakpoints.down('sm')]: {
+    width: '100%',
+  },
 }));
 
 const TableItem = ({
@@ -283,6 +288,7 @@ export const IndexList = ({
   const [optionChains, setOptionChain] = useState([]);
   const [quantitySize, setQuantitySize] = useAtom(stores.quantitySize);
   const [strikePrice, setStrikePrice] = useState(ltpStrikePrices);
+
   useEffect(() => {
     if (ltpStrikePrices !== 0) {
       setStrikePrice(ltpStrikePrices);
@@ -362,6 +368,8 @@ const Home = () => {
   const [filteredSymbols] = useAtom(stores.filteredSymbols);
   const [quantitySizeInit] = useAtom(stores.quantitySizeInit);
   const setQuantitySize = useSetAtom(stores.quantitySize);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [ltpStrikePrices, setLtpStrikePrices] = useState({
     [instrumentKeys.BANKNIFTY]: 0,
     [instrumentKeys.NIFTY]: 0,
@@ -401,23 +409,36 @@ const Home = () => {
   return (
     <>
       <Stack direction={'row'} spacing={4}>
-        <IndexList
-          indexTitle={'NIFTY 50'}
-          ltpStrikePrices={ltpStrikePrices?.[instrumentKeys.NIFTY]}
-          instrumentKey={instrumentKeys.NIFTY}
-          data={filteredSymbols?.nifty}
-          closeDiff={3}
-        />
-
-        <Box sx={{ width: `69.666667%` }}>
+        {!isMobile && (
+          <IndexList
+            indexTitle={'NIFTY 50'}
+            ltpStrikePrices={ltpStrikePrices?.[instrumentKeys.NIFTY]}
+            instrumentKey={instrumentKeys.NIFTY}
+            data={filteredSymbols?.nifty}
+            closeDiff={3}
+          />
+        )}
+        <Box sx={{ width: isMobile ? '100%' : `69.666667%` }}>
           <Stack spacing={2}>
-            <BuyAtStrike ltpStrikePrices={ltpStrikePrices} />
+            <BuyAtStrike
+              ltpStrikePrices={ltpStrikePrices}
+              isMobile={isMobile}
+            />
             <PostionsBar />
           </Stack>
         </Box>
       </Stack>
 
-      <Stack direction={'row'} spacing={4} mt={3}>
+      <Stack direction={isMobile ? 'column' : 'row'} spacing={4} mt={3}>
+        {isMobile && (
+          <IndexList
+            indexTitle={'NIFTY 50'}
+            ltpStrikePrices={ltpStrikePrices?.[instrumentKeys.NIFTY]}
+            instrumentKey={instrumentKeys.NIFTY}
+            data={filteredSymbols?.nifty}
+            closeDiff={3}
+          />
+        )}
         <IndexList
           indexTitle={'BANK NIFTY'}
           ltpStrikePrices={ltpStrikePrices?.[instrumentKeys.BANKNIFTY]}

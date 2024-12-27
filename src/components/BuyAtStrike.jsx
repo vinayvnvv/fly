@@ -16,7 +16,7 @@ import { placeUpstoxOrder } from '../common/utils';
 import { useSnackbar } from 'notistack';
 import moment from 'moment';
 
-export default function BuyAtStrike({ ltpStrikePrices }) {
+export default function BuyAtStrike({ ltpStrikePrices, isMobile }) {
   const [symbols] = useAtom(stores.filteredSymbols);
   const { enqueueSnackbar } = useSnackbar();
   const [feeds] = useAtom(stores.marketFeed);
@@ -141,18 +141,21 @@ export default function BuyAtStrike({ ltpStrikePrices }) {
     <Paper variant="outlined" sx={{ p: 2 }}>
       <Stack
         spacing={3}
-        direction={'row'}
+        direction={isMobile ? 'column' : 'row'}
         alignItems={'center'}
         justifyContent={'space-between'}
       >
-        <Stack>
-          <Typography variant="subtitle2" fontWeight={600}>
-            Quick Buy
-          </Typography>
-          <Typography variant="caption" color={'GrayText'}>
-            Buy At Strike Price
-          </Typography>
-        </Stack>
+        {!isMobile && (
+          <Stack>
+            <Typography variant="subtitle2" fontWeight={600}>
+              Quick Buy
+            </Typography>
+            <Typography variant="caption" color={'GrayText'}>
+              Buy At Strike Price
+            </Typography>
+          </Stack>
+        )}
+
         <Stack direction={'row'} alignItems={'center'}>
           {quanitiesArray.map(q => (
             <FormControlLabel

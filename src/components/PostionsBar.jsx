@@ -13,6 +13,7 @@ import {
   alpha,
   lighten,
   styled,
+  useMediaQuery,
   useTheme,
 } from '@mui/material';
 import {
@@ -64,6 +65,7 @@ const PostionsBar = ({
 }) => {
   const theme = useTheme();
   const profit = useRef();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { enqueueSnackbar } = useSnackbar();
   const [showActive, setShowActive] = useState(false);
   const [sort, setSort] = useState('');
@@ -203,7 +205,7 @@ const PostionsBar = ({
   return (
     <>
       {!showOnlyProfit ? (
-        <Paper sx={{ py: 1, px: 2 }} variant="outlined">
+        <Paper sx={{ py: 1, px: 2, overflowX: 'auto' }} variant="outlined">
           <Box direction={'column'} alignItems={'center'}>
             <Box flexGrow={1}>
               {Array.isArray(positions?.data) && positions?.data.length > 0 && (
@@ -214,7 +216,11 @@ const PostionsBar = ({
                 >
                   <TableHead>
                     <TableRow>
-                      <TableCell sx={{ textAlign: 'left' }}>
+                      <TableCell
+                        sx={{
+                          textAlign: 'left',
+                        }}
+                      >
                         <TableSortLabel
                           onClick={() =>
                             setSort(
@@ -230,7 +236,7 @@ const PostionsBar = ({
                       <TableCell sx={{ textAlign: 'center' }}></TableCell>
                       <TableCell align="right">Qty</TableCell>
                       <TableCell align="right">LTP</TableCell>
-                      <TableCell align="right"></TableCell>
+                      {!isMobile && <TableCell align="right"></TableCell>}
                       <TableCell align="right">
                         <TableSortLabel
                           onClick={() =>
@@ -251,6 +257,7 @@ const PostionsBar = ({
                         return (
                           <OrderChip
                             feeds={feeds}
+                            isMobile={isMobile}
                             profit={profit.current}
                             isMultiTrade={positionsData ? true : false}
                             data={pos}
