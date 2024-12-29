@@ -48,6 +48,7 @@ const StyledTable = styled(Table)(({ theme }) => ({
 
 const Orders = () => {
   const [orders, setOrders] = useState();
+  const [bgImage] = useAtom(stores.bgImage);
   const [tokens] = useAtom(stores.tokens);
   const [symbols] = useAtom(symbolsObjects);
   const [loading, setLoading] = useState(false);
@@ -189,167 +190,174 @@ const Orders = () => {
           />
         </Stack>
       </Box>
-      <TableContainer component={'div'} variant="outlined">
-        <StyledTable
-          size="small"
-          sx={{ minWidth: 650 }}
-          aria-label="a dense table"
-        >
-          <TableHead>
-            <TableRow>
-              <TableCell align="left">
-                <Typography color={'GrayText'} fontSize={11}>
-                  Time
-                </Typography>
-              </TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Type</TableCell>
-              <TableCell>Instrument</TableCell>
-              <TableCell align="right">
-                <Typography color={'GrayText'} fontSize={11}>
-                  Qty
-                </Typography>
-              </TableCell>
-              <TableCell align="right">
-                <Typography color={'GrayText'} fontSize={11}>
-                  Avg
-                </Typography>
-              </TableCell>
-
-              <TableCell align="right">
-                {' '}
-                <Typography color={'GrayText'} fontSize={11}>
-                  at
-                </Typography>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {orders?.map(row => (
-              <TableRow
-                key={row.name}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell align="left" width={'50px'}>
-                  <Typography fontSize={'12px'}>
-                    {moment(row.order_timestamp).format('hh:mm:ss')}
+      <Paper
+        variant="outlined"
+        sx={{ ...(!bgImage ? { backgroundColor: 'transparent' } : {}) }}
+      >
+        <TableContainer component={'div'} variant="outlined">
+          <StyledTable
+            size="small"
+            sx={{ minWidth: 650 }}
+            aria-label="a dense table"
+          >
+            <TableHead>
+              <TableRow>
+                <TableCell align="left">
+                  <Typography color={'GrayText'} fontSize={11}>
+                    Time
                   </Typography>
                 </TableCell>
-                <TableCell component="th" scope="row" width={'38px'}>
-                  {row.status === 'rejected' ? (
-                    <Chip
-                      label={row.status === 'rejected' ? 'REJECTED' : 'SELL'}
-                      size="small"
-                      sx={{
-                        borderRadius: 1,
-                        fontSize: 11,
-                        fontWeight: 500,
-                        color: theme =>
-                          getColorWithThemeMode(
-                            theme,
-                            theme.palette.error.main,
-                            theme.palette.error.dark,
-                          ),
-                        backgroundColor: theme =>
-                          getColorWithThemeMode(
-                            theme,
-                            lighten(theme.palette.error.main, 0.9),
-                            alpha(theme.palette.error.main, 0.1),
-                          ),
-                      }}
-                    />
-                  ) : (
-                    <Chip
-                      label={'SUCCESS'}
-                      size="small"
-                      sx={{
-                        borderRadius: 1,
-                        fontSize: 11,
-                        color: theme => theme.palette.success.main,
-                        backgroundColor: theme =>
-                          getColorWithThemeMode(
-                            theme,
-                            lighten(theme.palette.success.main, 0.9),
-                            alpha(theme.palette.success.main, 0.1),
-                          ),
-                      }}
-                    />
-                  )}
-                </TableCell>
-                <TableCell component="th" scope="row" width={'38px'}>
-                  {row.transaction_type === 'SELL' ? (
-                    <Chip
-                      label={'SELL'}
-                      size="small"
-                      sx={{
-                        borderRadius: 1,
-                        fontSize: 11,
-                        fontWeight: 500,
-                        color: theme =>
-                          getColorWithThemeMode(
-                            theme,
-                            theme.palette.error.main,
-                            theme.palette.error.dark,
-                          ),
-                        backgroundColor: theme =>
-                          getColorWithThemeMode(
-                            theme,
-                            lighten(theme.palette.error.main, 0.9),
-                            alpha(theme.palette.error.main, 0.1),
-                          ),
-                      }}
-                    />
-                  ) : (
-                    <Chip
-                      label={'BUY'}
-                      size="small"
-                      sx={{
-                        borderRadius: 1,
-                        fontSize: 11,
-                        color: theme => theme.palette.info.main,
-                        backgroundColor: theme =>
-                          getColorWithThemeMode(
-                            theme,
-                            lighten(theme.palette.info.main, 0.9),
-                            alpha(theme.palette.info.main, 0.1),
-                          ),
-                      }}
-                    />
-                  )}
-                </TableCell>
-                <TableCell
-                  width={'30%'}
-                  component="th"
-                  scope="row"
-                  align="left"
-                  sx={{ textTransform: 'uppercase' }}
-                >
-                  <Typography fontSize={'12px'}>
-                    {getFormattedSymbolName(symbols[row.instrument_token]) ||
-                      row.trading_symbol}
+                <TableCell>Status</TableCell>
+                <TableCell>Type</TableCell>
+                <TableCell>Instrument</TableCell>
+                <TableCell align="right">
+                  <Typography color={'GrayText'} fontSize={11}>
+                    Qty
                   </Typography>
                 </TableCell>
                 <TableCell align="right">
-                  <Typography fontSize={'12px'}>
-                    {row.filled_quantity}/{row.quantity}
+                  <Typography color={'GrayText'} fontSize={11}>
+                    Avg
                   </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  <Typography fontSize={'12px'}>{row.average_price}</Typography>
                 </TableCell>
 
                 <TableCell align="right">
-                  <Chip
-                    label={row.order_type}
-                    size="small"
-                    sx={{ fontSize: 11, borderRadius: 1, fontWeight: 500 }}
-                  />
+                  {' '}
+                  <Typography color={'GrayText'} fontSize={11}>
+                    at
+                  </Typography>
                 </TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </StyledTable>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {orders?.map(row => (
+                <TableRow
+                  key={row.name}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell align="left" width={'50px'}>
+                    <Typography fontSize={'12px'}>
+                      {moment(row.order_timestamp).format('hh:mm:ss')}
+                    </Typography>
+                  </TableCell>
+                  <TableCell component="th" scope="row" width={'38px'}>
+                    {row.status === 'rejected' ? (
+                      <Chip
+                        label={row.status === 'rejected' ? 'REJECTED' : 'SELL'}
+                        size="small"
+                        sx={{
+                          borderRadius: 1,
+                          fontSize: 11,
+                          fontWeight: 500,
+                          color: theme =>
+                            getColorWithThemeMode(
+                              theme,
+                              theme.palette.error.main,
+                              theme.palette.error.dark,
+                            ),
+                          backgroundColor: theme =>
+                            getColorWithThemeMode(
+                              theme,
+                              lighten(theme.palette.error.main, 0.9),
+                              alpha(theme.palette.error.main, 0.1),
+                            ),
+                        }}
+                      />
+                    ) : (
+                      <Chip
+                        label={'SUCCESS'}
+                        size="small"
+                        sx={{
+                          borderRadius: 1,
+                          fontSize: 11,
+                          color: theme => theme.palette.success.main,
+                          backgroundColor: theme =>
+                            getColorWithThemeMode(
+                              theme,
+                              lighten(theme.palette.success.main, 0.9),
+                              alpha(theme.palette.success.main, 0.1),
+                            ),
+                        }}
+                      />
+                    )}
+                  </TableCell>
+                  <TableCell component="th" scope="row" width={'38px'}>
+                    {row.transaction_type === 'SELL' ? (
+                      <Chip
+                        label={'SELL'}
+                        size="small"
+                        sx={{
+                          borderRadius: 1,
+                          fontSize: 11,
+                          fontWeight: 500,
+                          color: theme =>
+                            getColorWithThemeMode(
+                              theme,
+                              theme.palette.error.main,
+                              theme.palette.error.dark,
+                            ),
+                          backgroundColor: theme =>
+                            getColorWithThemeMode(
+                              theme,
+                              lighten(theme.palette.error.main, 0.9),
+                              alpha(theme.palette.error.main, 0.1),
+                            ),
+                        }}
+                      />
+                    ) : (
+                      <Chip
+                        label={'BUY'}
+                        size="small"
+                        sx={{
+                          borderRadius: 1,
+                          fontSize: 11,
+                          color: theme => theme.palette.info.main,
+                          backgroundColor: theme =>
+                            getColorWithThemeMode(
+                              theme,
+                              lighten(theme.palette.info.main, 0.9),
+                              alpha(theme.palette.info.main, 0.1),
+                            ),
+                        }}
+                      />
+                    )}
+                  </TableCell>
+                  <TableCell
+                    width={'30%'}
+                    component="th"
+                    scope="row"
+                    align="left"
+                    sx={{ textTransform: 'uppercase' }}
+                  >
+                    <Typography fontSize={'12px'}>
+                      {getFormattedSymbolName(symbols[row.instrument_token]) ||
+                        row.trading_symbol}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography fontSize={'12px'}>
+                      {row.filled_quantity}/{row.quantity}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <Typography fontSize={'12px'}>
+                      {row.average_price}
+                    </Typography>
+                  </TableCell>
+
+                  <TableCell align="right">
+                    <Chip
+                      label={row.order_type}
+                      size="small"
+                      sx={{ fontSize: 11, borderRadius: 1, fontWeight: 500 }}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </StyledTable>
+        </TableContainer>
+      </Paper>
     </Box>
   );
 };

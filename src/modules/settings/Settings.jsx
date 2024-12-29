@@ -4,6 +4,8 @@ import {
   FormControlLabel,
   FormGroup,
   IconButton,
+  Input,
+  OutlinedInput,
   Stack,
   Switch,
   Typography,
@@ -26,6 +28,7 @@ export const quanitiesArray = [
 const Settings = () => {
   const [symbolQuantityInfo] = useAtom(stores.symbolQuantityInfo);
   const [paperTrading, setPaperTrading] = useAtom(stores.paperTrading);
+  const [bgImage, setBgImage] = useAtom(stores.bgImage);
   const [quantitySizeInit, setQuantitySizeInit] = useAtom(
     stores.quantitySizeInit,
   );
@@ -96,6 +99,19 @@ const Settings = () => {
             label="Paper Trading"
           />
         </FormGroup>
+      </Box>
+      <Box mt={6}>
+        <Typography variant="subtitle1">Appearance</Typography>
+        <Divider sx={{ my: 2 }} />
+        <Stack direction={'row'} alignItems={'center'} spacing={3}>
+          <Typography>Background Image</Typography>
+          <OutlinedInput
+            size="small"
+            placeholder="url"
+            onChange={e => setBgImage(e.target.value)}
+            value={bgImage}
+          />
+        </Stack>
       </Box>
       <Box mt={6}>
         <Typography variant="subtitle1">Other Accounts</Typography>

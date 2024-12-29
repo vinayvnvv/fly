@@ -181,24 +181,26 @@ const PostionsBar = ({
     return showOnlyProfit ? (
       <ProfitTypo />
     ) : (
-      <Stack
-        sx={{
-          height: '100%',
-          padding: '30px',
-          backgroundColor: theme => theme.palette.background.paper,
-        }}
-        component={Paper}
-        variant="outlined"
-        direction={'column'}
-        alignItems={'center'}
-        justifyContent={'center'}
-        spacing={1}
-      >
-        <ShoppingBagTwoToneIcon sx={{ fontSize: 54, opacity: 0.5 }} />
-        <Typography color={'GrayText'} variant="h6">
-          No Positions.
-        </Typography>
-      </Stack>
+      <Paper variant="outlined">
+        <Stack
+          sx={{
+            height: '100%',
+            padding: '30px',
+            // backgroundColor: theme => theme.palette.background.paper,
+          }}
+          component={Paper}
+          variant="outlined"
+          direction={'column'}
+          alignItems={'center'}
+          justifyContent={'center'}
+          spacing={1}
+        >
+          <ShoppingBagTwoToneIcon sx={{ fontSize: 54, opacity: 0.5 }} />
+          <Typography color={'GrayText'} variant="h6">
+            No Positions.
+          </Typography>
+        </Stack>
+      </Paper>
     );
   }
 

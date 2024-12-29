@@ -55,10 +55,11 @@ function App() {
   const [authToken] = useAtom(token);
   const [mode] = useAtom(stores.theme);
   const [init, setInit] = useState(false);
+  const [bgImage] = useAtom(stores.bgImage);
   const [socketInit, setSocketInit] = useState(false);
   const appInit = authToken ? init && socketInit : true;
   return (
-    <ThemeProvider theme={theme({ mode })}>
+    <ThemeProvider theme={theme({ mode, bgImage })}>
       <SnackbarProvider
         maxSnack={6}
         preventDuplicate={true}

@@ -13,7 +13,7 @@ const GoogleRegular = new URL(
 ).href;
 
 export const theme = options => {
-  const { mode } = options || {};
+  const { mode, bgImage } = options || {};
   const _theme = createTheme({
     palette: {
       mode: mode || 'light',
@@ -51,6 +51,13 @@ export const theme = options => {
       },
     },
     components: {
+      MuiPaper: {
+        styleOverrides: {
+          root: {
+            ...(bgImage ? { backgroundColor: '#000000b3' } : {}),
+          },
+        },
+      },
       MuiButton: {
         styleOverrides: {
           // Name of the slot

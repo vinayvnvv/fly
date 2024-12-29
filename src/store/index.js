@@ -66,6 +66,9 @@ export const basketLists = atomWithStorage(
 export const theme = atomWithStorage('theme', 'light', storageOptions, {
   getOnInit: true,
 });
+export const bgImage = atomWithStorage('bgImage', '', storageOptions, {
+  getOnInit: true,
+});
 export const paperTrading = atomWithStorage(
   'paper_trading',
   false,
@@ -172,4 +175,5 @@ export const stores = {
   mainAccountActive,
   paperTrading,
   selectedBuyAtStrike,
+  bgImage,
 };
