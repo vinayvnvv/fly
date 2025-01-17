@@ -1,7 +1,7 @@
 class ControllerClass {
   positions;
   maxQuantity = 230;
-  maxOrders = 12;
+  maxOrders = 60;
   activeQuantity = 0;
   orders;
   activeOrders = 0;
