@@ -407,7 +407,10 @@ function OptionTrade() {
           }}
         >
           <Stack height={'100vh'}>
-            <Box height={'50vh'}>
+            <Box
+              height={'50vh'}
+              sx={{ display: 'flex', flexDirection: 'column' }}
+            >
               <Box p={2}>
                 <Stack
                   direction={'row'}
@@ -437,7 +440,7 @@ function OptionTrade() {
                   </Stack>
                 </Stack>
               </Box>
-              <Box p={1}>
+              <Box p={1} flexGrow={1} sx={{ overflowY: 'auto' }}>
                 <PostionsBar disableActivePosition />
               </Box>
             </Box>
