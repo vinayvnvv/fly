@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Divider,
   FormControlLabel,
   FormGroup,
@@ -17,6 +18,7 @@ import QuantityInput from '../../components/QuantityInput';
 import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 import { Accounts } from '../../config/accounts';
 import OtherAccounts from './OtherAccounts';
+import { OpenInNew } from '@mui/icons-material';
 
 export const quanitiesArray = [
   { name: 'Nifty', instrumentKey: instrumentKeys.NIFTY },
@@ -29,6 +31,7 @@ const Settings = () => {
   const [symbolQuantityInfo] = useAtom(stores.symbolQuantityInfo);
   const [paperTrading, setPaperTrading] = useAtom(stores.paperTrading);
   const [bgImage, setBgImage] = useAtom(stores.bgImage);
+  const token = localStorage.getItem('token');
   const [quantitySizeInit, setQuantitySizeInit] = useAtom(
     stores.quantitySizeInit,
   );
@@ -111,6 +114,21 @@ const Settings = () => {
             onChange={e => setBgImage(e.target.value)}
             value={bgImage}
           />
+        </Stack>
+      </Box>
+      <Box mt={6}>
+        <Typography variant="subtitle1">Apps</Typography>
+        <Divider sx={{ my: 2 }} />
+        <Stack direction={'row'} alignItems={'center'} spacing={3}>
+          <Typography>Token Pass To FlyCharts(Live ticks)</Typography>
+          <Button
+            href={`https://flycharts.web.app/store-key/${token}`}
+            target="_blank"
+            component={'a'}
+            startIcon={<OpenInNew />}
+          >
+            Live Data
+          </Button>
         </Stack>
       </Box>
       <Box mt={6}>
