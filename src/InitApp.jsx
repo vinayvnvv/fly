@@ -5,12 +5,16 @@ import {
   filterSymbols,
   filterSymbolsObject,
   formatFundsMarginData,
+  getFuturesData,
 } from './common/utils';
 import { memo, useEffect } from 'react';
 import { Controller } from './common/controller';
+import { fyers } from './main';
 
 const InitApp = ({ onInit }) => {
   const [authToken] = useAtom(token);
+  const [fyersToken, setFyersToken] = useAtom(stores.fyersToken);
+  const setFutures = useSetAtom(stores.futures);
   const [symbols, setSymbols] = useAtom(stores.symbols);
   const [_, setFilteredSymbols] = useAtom(stores.filteredSymbols);
   const [__, setSymbolsObjects] = useAtom(stores.symbolsObjects);
@@ -22,6 +26,19 @@ const InitApp = ({ onInit }) => {
   useEffect(() => {
     console.log('symbols', symbols, _);
     initApp();
+    if (fyersToken) {
+      fyers.setAccessToken(fyersToken);
+      fyers
+        .get_funds()
+        .then(res => {
+          console.log('fyers funds', res);
+        })
+        .catch(err => {
+          if (err.code === -16) {
+            setFyersToken(null);
+          }
+        });
+    }
   }, []);
 
   const getPositions = () => {
@@ -52,6 +69,8 @@ const InitApp = ({ onInit }) => {
         setSymbolQuantityInfo(symbolQuantityInfo);
         // setQuantitySizeInit(quantitySizeInit);
         setSymbolsObjects(filterSymbolsObject(res));
+        const futuresData = getFuturesData(res);
+        setFutures(futuresData);
         setTimeout(() => {
           onInit();
         }, 100);

@@ -496,3 +496,18 @@ export const isPaperTrading = () => {
   }
   return false;
 };
+
+export const getFuturesData = symbols => {
+  const futures = {};
+  symbols.forEach(fut => {
+    if (futures[fut.name]) {
+      if (moment(fut.expiry).isBefore(moment(futures[fut.name].expiry)))
+        futures[fut.name] = fut;
+    } else {
+      if (fut.instrument_type === 'FUT') {
+        futures[fut.name] = fut;
+      }
+    }
+  });
+  return futures;
+};

@@ -44,6 +44,14 @@ export const token = atomWithStorage('token', 'true', storageOptions, {
 export const tokens = atomWithStorage('tokens', '{}', jsonStorageOptions, {
   getOnInit: true,
 });
+export const fyersToken = atomWithStorage(
+  'fyersToken',
+  '{}',
+  jsonStorageOptions,
+  {
+    getOnInit: true,
+  },
+);
 export const accountsStatus = atomWithStorage(
   'accountsStatus',
   '{}',
@@ -55,6 +63,14 @@ export const accountsStatus = atomWithStorage(
 export const user = atomWithStorage('user', '{}', jsonStorageOptions, {
   getOnInit: true,
 });
+export const fyersUser = atomWithStorage(
+  'fyersUser',
+  '{}',
+  jsonStorageOptions,
+  {
+    getOnInit: true,
+  },
+);
 export const basketLists = atomWithStorage(
   'basketLists',
   [],
@@ -78,6 +94,9 @@ export const paperTrading = atomWithStorage(
   },
 );
 export const symbols = atomWithStorage('symbols', '', jsonStorageOptions, {
+  getOnInit: true,
+});
+export const futures = atomWithStorage('futures', '', jsonStorageOptions, {
   getOnInit: true,
 });
 export const quantitySizeInit = atomWithStorage(
@@ -176,4 +195,7 @@ export const stores = {
   paperTrading,
   selectedBuyAtStrike,
   bgImage,
+  fyersUser,
+  fyersToken,
+  futures,
 };
