@@ -146,6 +146,15 @@ export const baskets = atomWithStorage('baskets', [], jsonStorageArrayOptions, {
   getOnInit: true,
 });
 
+export const instruments = atomWithStorage(
+  'instruments',
+  [],
+  jsonStorageArrayOptions,
+  {
+    getOnInit: true,
+  },
+);
+
 export const mainAccountActive = atomWithStorage(
   'mainAccountActive',
   false,
@@ -176,4 +185,5 @@ export const stores = {
   paperTrading,
   selectedBuyAtStrike,
   bgImage,
+  instruments,
 };

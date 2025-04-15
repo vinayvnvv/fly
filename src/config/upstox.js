@@ -235,6 +235,17 @@ class UpStox {
     });
   }
 
+  getAllSymbols() {
+    return new Promise((resolve, reject) => {
+      fetch('https://fly-node.vercel.app/all')
+        .then(res => res.json())
+        .then(res => {
+          resolve(res);
+        })
+        .catch(err => reject(err));
+    });
+  }
+
   getMarketDataFeedForSocket() {
     return axios({
       method: 'get',

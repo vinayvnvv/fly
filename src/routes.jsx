@@ -96,6 +96,14 @@ export const router = AppLayout =>
           ),
         },
         {
+          path: '/trade',
+          element: (
+            <AuthRouter>
+              <Trade />
+            </AuthRouter>
+          ),
+        },
+        {
           path: '/trade-x',
           element: (
             <AuthRouter>

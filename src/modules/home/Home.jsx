@@ -119,7 +119,7 @@ const TableItemRootPrice = styled(props => (
   fontSize: '13px',
 }));
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
+export const StyledPaper = styled(Paper)(({ theme }) => ({
   borderRadius: '5px',
   flexGrow: 1,
   width: `${100 / 3}%`,

@@ -8,6 +8,7 @@ import {
 } from './common/utils';
 import { memo, useEffect } from 'react';
 import { Controller } from './common/controller';
+import { instruments } from './lib/indexDB';
 
 const InitApp = ({ onInit }) => {
   const [authToken] = useAtom(token);
@@ -58,6 +59,9 @@ const InitApp = ({ onInit }) => {
       });
     } else {
       onInit();
+    }
+    if (!instruments.isDBLoaded()) {
+      instruments.loadData();
     }
   };
   return <div />;
