@@ -34,6 +34,7 @@ import { useSnackbar } from 'notistack';
 import PostionsBar from '../../components/PostionsBar';
 import QuantityInput from '../../components/QuantityInput';
 import { BuyAtStrike } from '../../components';
+import BuyFutures from '../../components/BuyFutures';
 
 const TableItemRoot = styled(Stack)(({ theme, active, selected }) => ({
   // borderTop: `1px solid ${theme.palette.divider}`,
@@ -424,6 +425,7 @@ const Home = () => {
               ltpStrikePrices={ltpStrikePrices}
               isMobile={isMobile}
             />
+            <BuyFutures />
             <PostionsBar />
           </Stack>
         </Box>
