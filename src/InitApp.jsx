@@ -29,6 +29,7 @@ const InitApp = ({ onInit }) => {
   const setQuantitySizeInit = useSetAtom(stores.quantitySizeInit);
   const setBaskets = useSetAtom(stores.baskets);
   const getRefreshTokenForFyers = () => {
+    if (!fyersUser?.refresh_token) return;
     fetch('https://api-t1.fyers.in/api/v3/validate-refresh-token', {
       method: 'POST',
       headers: {
@@ -37,7 +38,7 @@ const InitApp = ({ onInit }) => {
       body: JSON.stringify({
         grant_type: 'refresh_token',
         appIdHash: sha256(`${VITE_FYERS_APP_ID}:${VITE_FYERS_APP_SECRET}`),
-        refresh_token: fyersUser.refresh_token,
+        refresh_token: fyersUser?.refresh_token,
         pin: '1994',
       }),
     })
