@@ -31,6 +31,7 @@ import { ORDER } from '../config';
 import { useSnackbar } from 'notistack';
 import { Cancel } from '@mui/icons-material';
 import LogoutTwoToneIcon from '@mui/icons-material/LogoutTwoTone';
+import { fyers } from '../main';
 
 const OrderChipContainer = styled(TableRow)(({ theme, quantity }) => ({
   [`& .${tableCellClasses.root}:not(.always-highlet)`]: {
@@ -74,6 +75,8 @@ const OrderChip = ({
   isMultiTrade,
   token,
   isMobile,
+  isFyers,
+  onFyerTransaction,
 }) => {
   const theme = useTheme();
   const { enqueueSnackbar } = useSnackbar();
@@ -126,6 +129,27 @@ const OrderChip = ({
     placeUpstoxOrder(symbol, qty, transaction_type, enqueueSnackbar, feeds);
   };
   const exitAllQtyInSymbol = () => {
+    if (isFyers) {
+      const order = {
+        symbol: data.symbol,
+        qty: data?.quantity,
+        type: 2,
+        side: -1,
+        productType: 'INTRADAY',
+        limitPrice: 0,
+        stopPrice: 0,
+        validity: 'DAY',
+        disclosedQty: 0,
+        offlineOrder: false,
+        stopLoss: 0,
+        takeProfit: 0,
+        orderTag: 'fut',
+      };
+      fyers.place_order(order).then(res => {
+        onFyerTransaction();
+      });
+      return;
+    }
     placeUpstoxOrder(
       symbol,
       data.quantity,
@@ -135,6 +159,7 @@ const OrderChip = ({
       token ? true : false,
     );
   };
+  console.log('order data', data);
   return (
     <OrderChipContainer quantity={data.quantity}>
       <TableCell component="th" scope="row">

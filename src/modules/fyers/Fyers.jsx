@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import { FyersOrders } from './Orders';
 import Tabs from '../../components/Tabs';
-import { FyersPositions } from './Positions';
+import { convertToUpstoxPositions, FyersPositions } from './Positions';
 import { fyers } from '../../main';
 import { Stack, Typography } from '@mui/material';
 import { formaToINR } from '../../common/utils';
+import BuyFutures from '../../components/BuyFutures';
+import PostionsBar from '../../components/PostionsBar';
+import { useAtom } from 'jotai';
+import { stores } from '../../store';
 
 const tabs = [
   { id: 0, name: 'Positions' },
@@ -14,6 +18,8 @@ const tabs = [
 export const Fyers = () => {
   const [tab, setTab] = useState(0);
   const [funds, setFunds] = useState([]);
+  const [positions, setPositions] = useState();
+  const [symbols] = useAtom(stores.symbols);
   useEffect(() => {
     fyers.get_funds().then(res => {
       let _funds = {};
@@ -27,6 +33,21 @@ export const Fyers = () => {
       }
     });
   }, []);
+
+  const getPositions = () => {
+    fyers.get_positions().then(res => {
+      if (res.code === 200) {
+        setPositions(convertToUpstoxPositions(res.netPositions, symbols));
+      }
+    });
+  };
+  useEffect(() => {
+    getPositions();
+  }, []);
+  console.log(positions);
+  const onTransaction = () => {
+    getPositions();
+  };
   return (
     <div>
       <Stack
@@ -36,21 +57,47 @@ export const Fyers = () => {
         justifyContent={'space-between'}
       >
         <Tabs items={tabs} value={tab} onChange={(e, v) => setTab(v)} />
-        <Stack direction={'row'} alignItems={'center'} spacing={1}>
-          <Typography variant="subtitle2" color={'GrayText'}>
-            Margin Avail:
-          </Typography>
-          <Typography variant="subtitle2" fontWeight={600}>
-            {typeof funds?.equityAmount === 'number'
-              ? formaToINR(funds.equityAmount.toFixed(2))
-              : formaToINR(funds?.equityAmount)}
-          </Typography>
+        <Stack direction={'row'} alignItems={'center'} spacing={2}>
+          <Stack direction={'row'} alignItems={'center'}>
+            <Typography variant="subtitle2" color={'GrayText'}>
+              PL:
+            </Typography>
+            <PostionsBar
+              showOnlyProfit
+              showPercAtInit
+              positionsData={{ data: positions }}
+              isFyers
+              fyers={{
+                margin: funds?.equityAmount,
+              }}
+              onFyerTransaction={onTransaction}
+            />
+          </Stack>
+          <Stack direction={'row'} alignItems={'center'} spacing={1}>
+            <Typography variant="subtitle2" color={'GrayText'}>
+              Margin Avail:
+            </Typography>
+            <Typography variant="subtitle2" fontWeight={600}>
+              {typeof funds?.equityAmount === 'number'
+                ? formaToINR(funds.equityAmount.toFixed(2))
+                : formaToINR(funds?.equityAmount)}
+            </Typography>
+          </Stack>
         </Stack>
       </Stack>
 
       <br />
+      <BuyFutures />
       <br />
-      {tab === 0 && <FyersPositions />}
+
+      {tab === 0 && (
+        <FyersPositions
+          funds={funds}
+          positions={positions}
+          setPositions={setPositions}
+          onTransaction={onTransaction}
+        />
+      )}
       {tab === 1 && <FyersOrders />}
     </div>
   );
