@@ -4,7 +4,7 @@ import { stores } from '../../store';
 import { useAtom } from 'jotai';
 import PostionsBar from '../../components/PostionsBar';
 
-const convertToUpstoxPositions = (positions, symbols) => {
+export const convertToUpstoxPositions = (positions, symbols) => {
   return positions.map(itm => {
     let key = symbols.find(symbol => symbol.fyers_symbol === itm.symbol);
     console.log(key);
@@ -24,20 +24,19 @@ const convertToUpstoxPositions = (positions, symbols) => {
   });
 };
 
-export const FyersPositions = () => {
-  const [positions, setPositions] = useState();
-  const [symbols] = useAtom(stores.symbols);
-  useEffect(() => {
-    fyers.get_positions().then(res => {
-      if (res.code === 200) {
-        setPositions(convertToUpstoxPositions(res.netPositions, symbols));
-      }
-    });
-  }, []);
-  console.log(positions);
+export const FyersPositions = ({ funds, positions, onTransaction }) => {
   return (
     <div>
-      {positions && <PostionsBar positionsData={{ data: positions }} />}
+      {positions && (
+        <PostionsBar
+          positionsData={{ data: positions }}
+          isFyers
+          fyers={{
+            margin: funds?.equityAmount,
+          }}
+          onFyerTransaction={onTransaction}
+        />
+      )}
     </div>
   );
 };

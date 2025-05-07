@@ -107,8 +107,24 @@ export const quantitySizeInit = atomWithStorage(
     getOnInit: true,
   },
 );
+export const futuresQuantitySize = atomWithStorage(
+  'future_quantity_size',
+  '',
+  jsonStorageOptions,
+  {
+    getOnInit: true,
+  },
+);
 export const selectedBuyAtStrike = atomWithStorage(
   'selected_buy_at_strike',
+  '',
+  jsonStorageOptions,
+  {
+    getOnInit: true,
+  },
+);
+export const selectedFuturesBuyAtStrike = atomWithStorage(
+  'selected_futures_buy_at_strike',
   '',
   jsonStorageOptions,
   {
@@ -198,4 +214,6 @@ export const stores = {
   fyersUser,
   fyersToken,
   futures,
+  selectedFuturesBuyAtStrike,
+  futuresQuantitySize,
 };

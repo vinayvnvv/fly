@@ -38,6 +38,7 @@ import TableRow from '@mui/material/TableRow';
 import { useSnackbar } from 'notistack';
 import ConfirmButton from './ConfirmButton';
 import { Controller } from '../common/controller';
+import { fyers } from '../main';
 
 export const StyledTable = styled(Table)(({ theme }) => ({
   [`& .${tableHeadClasses.root}`]: {
@@ -62,6 +63,9 @@ const PostionsBar = ({
   positionsData,
   disableActivePosition,
   token,
+  isFyers,
+  onFyerTransaction,
+  fyers,
 }) => {
   const theme = useTheme();
   const profit = useRef();
@@ -118,6 +122,12 @@ const PostionsBar = ({
   totalProfit = totalProfit.toFixed(2);
 
   const exitAll = exitHalf => {
+    if (isFyers) {
+      fyers.exit_position({ exit_all: 1 }).then(res => {
+        onFyerTransaction();
+      });
+      return;
+    }
     exitAllPositions(
       positions?.data,
       symbols,
@@ -128,7 +138,10 @@ const PostionsBar = ({
     );
   };
 
-  const percProfit = ((totalProfit * 100) / margin).toFixed(2);
+  const percProfit = (
+    (totalProfit * 100) /
+    (isFyers ? fyers?.margin : margin)
+  ).toFixed(2);
 
   const ProfitTypo = () => {
     return (
@@ -260,6 +273,8 @@ const PostionsBar = ({
                       .map(pos => {
                         return (
                           <OrderChip
+                            isFyers={isFyers}
+                            onFyerTransaction={onFyerTransaction}
                             feeds={feeds}
                             isMobile={isMobile}
                             profit={profit.current}
@@ -297,17 +312,20 @@ const PostionsBar = ({
                       >
                         Exit all
                       </ConfirmButton>
-                      <ConfirmButton
-                        variant="outlined"
-                        disableElevation
-                        size="small"
-                        sx={{ minWidth: '87px' }}
-                        startIcon={<LogoutIcon />}
-                        confirmText={'Confirm'}
-                        onConfirm={() => exitAll(true)}
-                      >
-                        Exit Half
-                      </ConfirmButton>
+                      {!isFyers && (
+                        <ConfirmButton
+                          variant="outlined"
+                          disableElevation
+                          size="small"
+                          sx={{ minWidth: '87px' }}
+                          startIcon={<LogoutIcon />}
+                          confirmText={'Confirm'}
+                          onConfirm={() => exitAll(true)}
+                        >
+                          Exit Half
+                        </ConfirmButton>
+                      )}
+
                       <Divider
                         orientation="vertical"
                         sx={{ height: '23px', mx: 1.5 }}

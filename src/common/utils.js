@@ -502,12 +502,20 @@ export const getFuturesData = symbols => {
   symbols.forEach(fut => {
     if (futures[fut.name]) {
       if (moment(fut.expiry).isBefore(moment(futures[fut.name].expiry)))
-        futures[fut.name] = fut;
+        if (fut.instrument_type === 'FUT') {
+          futures[fut.name] = fut;
+        }
     } else {
       if (fut.instrument_type === 'FUT') {
         futures[fut.name] = fut;
       }
     }
   });
-  return futures;
+  const _futures = {
+    [instrumentKeys.NIFTY]: futures['NIFTY'],
+    [instrumentKeys.BANKNIFTY]: futures['BANKNIFTY'],
+    [instrumentKeys.FINNIFTY]: futures['FINNIFTY'],
+    [instrumentKeys.SENSEX]: futures['SENSEX'],
+  };
+  return _futures;
 };
