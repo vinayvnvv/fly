@@ -20,7 +20,7 @@ const futuresArray = [
   { name: 'Bank Nifty', instrumentKey: instrumentKeys.BANKNIFTY },
 ];
 
-const BuyFutures = ({ isMobile }) => {
+const BuyFutures = ({ isMobile, onTransaction }) => {
   const [symbolQuantityInfo] = useAtom(stores.symbolQuantityInfo);
   const { enqueueSnackbar } = useSnackbar();
   const [futuresQuantitySize, setFuturesQuantitySize] = useAtom(
@@ -90,6 +90,7 @@ const BuyFutures = ({ isMobile }) => {
           message: 'Order Sent.',
           variant: 'success',
         });
+        onTransaction();
       })
       .catch(err => {
         console.log('orders', err);

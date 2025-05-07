@@ -87,7 +87,7 @@ export const Fyers = () => {
       </Stack>
 
       <br />
-      <BuyFutures />
+      <BuyFutures onTransaction={onTransaction} />
       <br />
 
       {tab === 0 && (
