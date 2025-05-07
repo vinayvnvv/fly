@@ -14,6 +14,7 @@ import { fyers } from './main';
 import { sha256 } from 'js-sha256';
 
 const { VITE_FYERS_APP_ID, VITE_FYERS_APP_SECRET } = import.meta.env;
+import { instruments } from './lib/indexDB';
 
 const InitApp = ({ onInit }) => {
   const [authToken] = useAtom(token);
