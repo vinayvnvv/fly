@@ -204,6 +204,8 @@ const PostionsBar = ({
     );
   }
 
+  console.log(positionArray, positionsData, 'positionArray');
+
   return (
     <>
       {!showOnlyProfit ? (

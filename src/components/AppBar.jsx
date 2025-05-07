@@ -78,19 +78,30 @@ const StyledTab = styled(props => <Tab disableRipple {...props} />)(
     [`&:not(.${tabClasses.selected}):not(:hover)`]: {
       color: getColorWithThemeMode(theme, '#333', theme.palette.text.primary),
     },
+    [`&.${tabClasses.disabled}`]: {
+      color: getColorWithThemeMode(
+        theme,
+        '#cc000066 !important',
+        '#cc000044 !important',
+      ),
+      pointerEvents: 'none',
+    },
   }),
 );
-const navLinks = [
+const _navLinks = [
   { label: 'Home', path: '/' },
   { label: 'Basket', path: '/basket' },
   { label: 'Orders', path: '/orders' },
   { label: 'Positions', path: '/positions' },
-  { label: 'Pos X', path: '/trade-x' },
+  // { label: 'Pos X', path: '/trade-x' },
+  { label: 'Fyers', path: '/fyers' },
   { label: 'Reports', path: '/reports' },
   { label: 'Settings', path: '/settings' },
 ];
 const AppBar = () => {
   const [value, setValue] = useState(0);
+  const [navLinks, setNavLinks] = useState(_navLinks);
+  const [fyersToken] = useAtom(stores.fyersToken);
   const [fundsMargins] = useAtom(stores.fundAndMargin);
   const [mainAccountStatus] = useAtom(stores.mainAccountActive);
   const theme = useTheme();
@@ -108,6 +119,18 @@ const AppBar = () => {
       }
     }
   }, [location]);
+
+  useEffect(() => {
+    const findIdx = _navLinks.findIndex(obj => obj.path === '/fyers');
+    const newNavLinks = [..._navLinks];
+    if (!fyersToken) {
+      newNavLinks[findIdx] = { ...newNavLinks[findIdx], disabled: true };
+      setNavLinks(newNavLinks);
+    } else {
+      newNavLinks[findIdx] = { ...newNavLinks[findIdx], disabled: false };
+      setNavLinks(newNavLinks);
+    }
+  }, [fyersToken]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -264,6 +287,7 @@ const AppBar = () => {
                     label={nav.label}
                     component={NavLink}
                     to={nav.path}
+                    disabled={nav.disabled}
                   />
                 ))}
               </StyledTabs>

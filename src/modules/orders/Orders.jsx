@@ -46,8 +46,8 @@ const StyledTable = styled(Table)(({ theme }) => ({
   },
 }));
 
-const Orders = () => {
-  const [orders, setOrders] = useState();
+const Orders = ({ initialOrders, fromFyers = false }) => {
+  const [orders, setOrders] = useState(initialOrders);
   const [bgImage] = useAtom(stores.bgImage);
   const [tokens] = useAtom(stores.tokens);
   const [symbols] = useAtom(symbolsObjects);
@@ -69,7 +69,11 @@ const Orders = () => {
     });
   };
   useEffect(() => {
-    getOrders();
+    if (initialOrders) {
+      setOrders(initialOrders);
+    } else {
+      getOrders();
+    }
   }, []);
   const onUserChange = e => {
     const token = e.target.value;
@@ -114,25 +118,29 @@ const Orders = () => {
         <Typography variant="subtitle2" sx={{ minWidth: 90 }}>
           Orders {orders?.length > 0 ? `(${orders.length})` : ''}
         </Typography>
-        <Select
-          value={user}
-          variant="standard"
-          onChange={onUserChange}
-          size="small"
-          sx={{ minWidth: 120 }}
-        >
-          <MenuItem value={'me'}>Me</MenuItem>
-          {tokens &&
-            typeof tokens === 'object' &&
-            Object.keys(tokens).map(key => (
-              <MenuItem key={key} value={tokens[key]}>
-                {key}
-              </MenuItem>
-            ))}
-        </Select>
+        {!fromFyers && (
+          <Select
+            value={user}
+            variant="standard"
+            onChange={onUserChange}
+            size="small"
+            sx={{ minWidth: 120 }}
+          >
+            <MenuItem value={'me'}>Me</MenuItem>
+            {tokens &&
+              typeof tokens === 'object' &&
+              Object.keys(tokens).map(key => (
+                <MenuItem key={key} value={tokens[key]}>
+                  {key}
+                </MenuItem>
+              ))}
+          </Select>
+        )}
       </Stack>
     );
   };
+
+  console.log('Orders', orders);
   if (loading)
     return (
       <Stack

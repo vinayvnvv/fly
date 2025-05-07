@@ -13,7 +13,8 @@ import TradeX from './modules/trade-x/TradeX';
 import ChartComponent from './modules/chart/Chart';
 import OptionTrade from './modules/option-trade/OptionTrade';
 import PL from './modules/pl/PL';
-
+import FyersLogin from './modules/fyers-login';
+import { Fyers } from './modules/fyers/Fyers';
 const AuthRouter = ({ children }) => {
   const [authToken] = useAtom(token);
   return authToken ? (
@@ -112,6 +113,14 @@ export const router = AppLayout =>
           ),
         },
         {
+          path: '/fyers',
+          element: (
+            <AuthRouter>
+              <Fyers />
+            </AuthRouter>
+          ),
+        },
+        {
           path: '/option-trade/:instrumentId',
           element: (
             <AuthRouter>
@@ -122,6 +131,10 @@ export const router = AppLayout =>
         {
           path: '/login',
           element: <Login />,
+        },
+        {
+          path: '/fyers-login',
+          element: <FyersLogin />,
         },
       ],
     },

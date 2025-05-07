@@ -19,6 +19,7 @@ import RefreshRoundedIcon from '@mui/icons-material/RefreshRounded';
 import { Accounts } from '../../config/accounts';
 import OtherAccounts from './OtherAccounts';
 import { OpenInNew } from '@mui/icons-material';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 
 export const quanitiesArray = [
   { name: 'Nifty', instrumentKey: instrumentKeys.NIFTY },
@@ -128,6 +129,21 @@ const Settings = () => {
             startIcon={<OpenInNew />}
           >
             Live Data
+          </Button>
+        </Stack>
+      </Box>
+      <Box mt={6}>
+        <Typography variant="subtitle1">Fyers Login</Typography>
+        <Divider sx={{ my: 2 }} />
+        <Stack direction={'row'} alignItems={'center'} spacing={3}>
+          <Typography>Click here to login to Fyers</Typography>
+          <Button
+            href={`/fyers-login`}
+            variant="outlined"
+            component={'a'}
+            endIcon={<KeyboardDoubleArrowRightIcon />}
+          >
+            Login
           </Button>
         </Stack>
       </Box>
