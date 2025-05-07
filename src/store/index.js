@@ -226,5 +226,4 @@ export const stores = {
   futures,
   selectedFuturesBuyAtStrike,
   futuresQuantitySize,
-  instruments,
 };
